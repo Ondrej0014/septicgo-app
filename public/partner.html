@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SepticGo - Partner</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:#f0fdf4;color:#1a1a1a}
+    header{background:#16a34a;color:#fff;padding:20px 40px;display:flex;justify-content:space-between;align-items:center}
+    header h1{font-size:1.4rem}
+    nav a{color:#fff;text-decoration:none;margin-left:20px;font-weight:500}
+    .container{max-width:700px;margin:40px auto;padding:0 20px}
+    h2{color:#16a34a;margin-bottom:20px;margin-top:40px}
+    input,textarea,select{width:100%;padding:11px;margin-bottom:12px;border:1px solid #d1d5db;border-radius:8px;font-size:0.95rem}
+    button{padding:12px 24px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.95rem}
+    button:hover{background:#15803d}
+    .card{background:#fff;border:1px solid #d1fae5;border-radius:10px;padding:18px;margin-bottom:14px}
+    .card h4{margin-bottom:6px}
+    .card p{font-size:0.9rem;color:#555;margin-bottom:4px}
+    .status{display:inline-block;padding:4px 10px;border-radius:20px;font-size:0.8rem;font-weight:600;margin-bottom:8px}
+    .s-pending_partner{background:#fef9c3;color:#854d0e}
+    .s-awaiting_payment{background:#dbeafe;color:#1e40af}
+    .s-paid{background:#dcfce7;color:#166534}
+    .s-done{background:#e0e7ff;color:#3730a3}
+    .msg{margin-top:12px;padding:12px;border-radius:8px}
+    .msg-ok{background:#dcfce7;color:#166534}
+    .msg-err{background:#fee2e2;color:#991b1b}
+    .photos-grid{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+    .photos-grid img{width:120px;height:90px;object-fit:cover;border-radius:6px;border:1px solid #d1fae5}
+    footer{background:#15803d;color:#fff;text-align:center;padding:20px;font-size:0.85rem;margin-top:60px}
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>SepticGo - Partner portal</h1>
+  <nav>
+    <a href="/">Hlavni stranka</a>
+    <a href="/admin">Admin</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <h2>Nacist vyjezd podle ID</h2>
+  <div style="display:flex;gap:10px">
+    <input type="number" id="search-id" placeholder="ID vyjezdu" style="flex:1" />
+    <button onclick="loadBooking()">Nacist</button>
+  </div>
+  <div id="booking-detail" style="margin-top:16px"></div>
+
+  <h2>Oznacit vyjezd jako dokonceny</h2>
+  <form id="complete-form">
+    <input type="number" name="booking_id" placeholder="ID vyjezdu *" required />
+    <textarea name="note" rows="3" placeholder="Poznamka ridice (nepovinne)"></textarea>
+    abel style="display:block;margin-bottom:8px;font-weight:600">Fotky po vyvozu</label>
+    <input type="file" name="photos" multiple accept="image/*" />
+    <br/>
+    <button type="submit" style="margin-top:12px">Ulozit a dokoncit</button>
+  </form>
+  <div id="complete-message"></div>
+
+  <h2>Vsechny vyjezdy cekajici na potvrzeni</h2>
+  <button onclick="loadPending()">Nacist cekajici</button>
+  <div id="pending-list" style="margin-top:16px"></div>
+
+</div>
+
+<footer>2026 SepticGo</footer>
+
+<script>
+  async function loadBooking() {
+    const id = document.getElementById("search-id").value;
+    const detail = document.getElementById("booking-detail");
+    if (id === "") { detail.innerHTML = "<p>Zadejte ID.</p>"; return; }
+    detail.innerHTML = "<p>Nacitam...</p>";
+    try {
+      const res = await fetch("/api/bookings/" + id);
+      if (res.status === 404) { detail.innerHTML = "<p>Vyjezd nenalezen.</p>"; return; }
+      const b = await res.json();
+      const photos = await (await fetch("/api/uploads/" + id + "/photos")).json();
+      const photoHtml = photos.length > 0
+        ? "<div class=\"photos-grid\">" + photos.map(p => "<img src=\"" + p.url + "\" alt=\"foto\" />").join("") + "</div>"
+        : "<p style=\"font-size:0.85rem;color:#888\">Zadne fotky.</p>";
+      detail.innerHTML = "<div class=\"card\"><h4>" + b.address + "</h4><span class=\"status s-" + b.status + "\">" + b.status + "</span><p>Zakaznik: " + (b.customer_name || "neuvedeno") + "</p><p>Email: " + b.customer_email + "</p><p>Telefon: " + (b.customer_phone || "neuvedeno") + "</p><p>Jimka: " + (b.tank_size_liters || "neuvedeno") + " l</p><p>Termin: " + (b.preferred_date || "neuvedeno") + "</p><p>Cena: " + b.price_czk + " Kc</p>" + photoHtml + "</div>";
+    } catch(err) {
+      detail.innerHTML = "<p>Chyba pri nacitani.</p>";
+    }
+  }
+
+  document.getElementById("complete-form").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const bookingId = form.booking_id.value;
+    const msg = document.getElementById("complete-message");
+    msg.className = "msg";
+    msg.textContent = "Ukladam...";
+
+    try {
+      if (form.photos.files.length > 0) {
+        const fd = new FormData();
+        for (const f of form.photos.files) fd.append("photos", f);
+        fd.append("type", "after");
+        const upRes = await fetch("/api/uploads/" + bookingId + "/photos", { method: "POST", body: fd });
+        if (upRes.ok === false) {
+          msg.className = "msg msg-err";
+          msg.textContent = "Chyba pri nahravani fotek.";
+          return;
+        }
+      }
+
+      const patchRes = await fetch("/api/bookings/" + bookingId, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "done" })
+      });
+
+      if (patchRes.ok) {
+        msg.className = "msg msg-ok";
+        msg.textContent = "Vyjezd oznacen jako dokonceny. E-mail zakaznikovi byl odeslan.";
+        form.reset();
+      } else {
+        msg.className = "msg msg-err";
+        msg.textContent = "Chyba pri aktualizaci statusu.";
+      }
+    } catch(err) {
+      msg.className = "msg msg-err";
+      msg.textContent = "Chyba pri ukladani.";
+    }
+  });
+
+  async function loadPending() {
+    const list = document.getElementById("pending-list");
+    list.innerHTML = "<p>Nacitam...</p>";
+    try {
+      const res = await fetch("/api/bookings?status=pending_partner");
+      const bookings = await res.json();
+      if (bookings.length === 0) { list.innerHTML = "<p>Zadne cekajici vyjezdy.</p>"; return; }
+      list.innerHTML = bookings.map(b =>
+        "<div class=\"card\"><h4>" + b.address + "</h4><span class=\"status s-" + b.status + "\">" + b.status + "</span><p>Zakaznik: " + (b.customer_name || "neuvedeno") + "</p><p>Email: " + b.customer_email + "</p><p>Termin: " + (b.preferred_date || "neuvedeno") + "</p><p>ID: " + b.id + "</p><button onclick=\"confirmBooking(" + b.id + ")\">Potvrdit a poslat platbu</button></div>"
+      ).join("");
+    } catch(err) {
+      list.innerHTML = "<p>Chyba pri nacitani.</p>";
+    }
+  }
+
+  async function confirmBooking(bookingId) {
+    try {
+      const res = await fetch("/api/payments/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ booking_id: bookingId })
+      });
+      const data = await res.json();
+      if (data.url) {
+        alert("Platebni odkaz odeslan zakaznikovi emailem. URL: " + data.url);
+        loadPending();
+      }
+    } catch(err) {
+      alert("Chyba pri vytvareni platby.");
+    }
+  }
+</script>
+</body>
+</html>

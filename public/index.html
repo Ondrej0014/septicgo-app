@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SepticGo - Vyvoz jimek bez starostí</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:#f0fdf4;color:#1a1a1a}
+    header{background:#16a34a;color:#fff;padding:20px 40px;display:flex;justify-content:space-between;align-items:center}
+    header h1{font-size:1.6rem}
+    nav a{color:#fff;text-decoration:none;margin-left:20px;font-weight:500}
+    .hero{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;padding:80px 40px;text-align:center}
+    .hero h2{font-size:2.5rem;margin-bottom:16px}
+    .hero p{font-size:1.1rem;opacity:0.9;max-width:560px;margin:0 auto 32px}
+    .btn{display:inline-block;background:#fff;color:#16a34a;padding:14px 32px;border-radius:8px;font-weight:700;text-decoration:none;font-size:1rem}
+    .steps{display:flex;gap:24px;padding:60px 40px;justify-content:center;flex-wrap:wrap;background:#fff}
+    .step{background:#f0fdf4;border-radius:12px;padding:28px;max-width:220px;text-align:center;border:1px solid #bbf7d0}
+    .step .num{width:40px;height:40px;background:#16a34a;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;margin:0 auto 12px}
+    .step h3{margin-bottom:8px}
+    .step p{font-size:0.85rem;color:#555}
+    #booking{padding:60px 40px;max-width:600px;margin:0 auto}
+    #booking h2{font-size:1.8rem;margin-bottom:24px;color:#16a34a}
+    form input,form select{width:100%;padding:12px;margin-bottom:14px;border:1px solid #d1d5db;border-radius:8px;font-size:0.95rem}
+    form button{width:100%;padding:14px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer}
+    form button:hover{background:#15803d}
+    #booking-message{margin-top:16px;padding:14px;border-radius:8px;display:none}
+    .msg-ok{background:#dcfce7;color:#166534;display:block}
+    .msg-err{background:#fee2e2;color:#991b1b;display:block}
+    .history-section{padding:40px;max-width:800px;margin:0 auto}
+    .history-section h2{color:#16a34a;margin-bottom:16px}
+    .booking-card{background:#fff;border:1px solid #d1fae5;border-radius:10px;padding:18px;margin-bottom:14px}
+    .booking-card h4{margin-bottom:6px}
+    .booking-card p{font-size:0.9rem;color:#555;margin-bottom:4px}
+    .status{display:inline-block;padding:4px 10px;border-radius:20px;font-size:0.8rem;font-weight:600;margin-bottom:8px}
+    .s-pending_partner{background:#fef9c3;color:#854d0e}
+    .s-awaiting_payment{background:#dbeafe;color:#1e40af}
+    .s-paid{background:#dcfce7;color:#166534}
+    .s-done{background:#e0e7ff;color:#3730a3}
+    .pay-btn{margin-top:8px;padding:8px 16px;background:#16a34a;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600}
+    .payment-banner{display:none;padding:16px;text-align:center;font-weight:600;border-bottom:2px solid #86efac;background:#dcfce7;color:#166534}
+    footer{background:#15803d;color:#fff;text-align:center;padding:20px;font-size:0.85rem;margin-top:60px}
+  </style>
+</head>
+<body>
+
+<div class="payment-banner" id="payment-banner"></div>
+
+<header>
+  <h1>SepticGo</h1>
+  <nav>
+    <a href="#booking">Objednat</a>
+    <a href="#history">Moje vyjezdy</a>
+    <a href="/partner">Partner</a>
+    <a href="/admin">Admin</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h2>Vyvoz jimky bez starostí</h2>
+  <p>Zadejte adresu, my zaridime zbytek. Vyjezd i bez vasi pritomnosti.</p>
+  <a href="#booking" class="btn">Objednat vyjezd</a>
+</section>
+
+<section class="steps">
+  <div class="step"><div class="num">1</div><h3>Nastavení</h3><p>Zadáte adresu, velikost jímky a preferovanou frekvenci.</p></div>
+  <div class="step"><div class="num">2</div><h3>Potvrzení</h3><p>Ověříme dostupnost partnera a pošleme navržené termíny.</p></div>
+  <div class="step"><div class="num">3</div><h3>Výjezd</h3><p>Partner provede vývoz, i bez vaší fyzické přítomnosti.</p></div>
+  <div class="step"><div class="num">4</div><h3>Historie</h3><p>V aplikaci vidíte faktury, termíny a plán dalších vývozů.</p></div>
+</section>
+
+<section id="booking">
+  <h2>Objednat vyvoz</h2>
+  <form id="booking-form">
+    <input type="text" name="customer_name" placeholder="Jmeno a prijmeni" />
+    <input type="email" name="customer_email" placeholder="E-mail *" required />
+    <input type="tel" name="customer_phone" placeholder="Telefon" />
+    <input type="text" name="address" placeholder="Adresa nemovitosti *" required />
+    <input type="number" name="tank_size_liters" placeholder="Velikost jimky v litrech (napr. 5000)" />
+    <select name="frequency_months">
+      <option value="">Frekvence vyvozu</option>
+      <option value="3">Každé 3 mesice</option>
+      <option value="6">Každych 6 mesicu</option>
+      <option value="12">Jednou rocne</option>
+    </select>
+    <input type="text" name="region" placeholder="Region (napr. Praha-zapad) *" required />
+    <input type="date" name="preferred_date" />
+    <button type="submit">Odeslat poptavku</button>
+  </form>
+  <div id="booking-message"></div>
+</section>
+
+<section class="history-section" id="history">
+  <h2>Moje vyjezdy</h2>
+  <div style="display:flex;gap:10px;margin-bottom:16px">
+    <input type="email" id="history-email" placeholder="Vas e-mail" style="flex:1;padding:10px;border:1px solid #d1d5db;border-radius:8px" />
+    <button onclick="loadHistory()" style="padding:10px 20px;background:#16a34a;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600">Nacist</button>
+  </div>
+  <div id="history-list"></div>
+</section>
+
+<footer>2026 SepticGo - Vyvoz jimek jednoduse</footer>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const banner = document.getElementById("payment-banner");
+  if (urlParams.get("payment") === "success") {
+    banner.textContent = "Platba probehla uspesne! Potvrzeni jsme Vam zaslali e-mailem.";
+    banner.style.display = "block";
+  } else if (urlParams.get("payment") === "cancel") {
+    banner.textContent = "Platba byla zrusena. Zkuste to prosim znovu.";
+    banner.style.display = "block";
+    banner.style.background = "#fee2e2";
+    banner.style.color = "#991b1b";
+  }
+
+  document.getElementById("booking-form").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const msg = document.getElementById("booking-message");
+    msg.className = "";
+    msg.textContent = "Odesilam...";
+    msg.style.display = "block";
+    const data = {
+      customer_name: form.customer_name.value,
+      customer_email: form.customer_email.value,
+      customer_phone: form.customer_phone.value,
+      address: form.address.value,
+      tank_size_liters: form.tank_size_liters.value ? Number(form.tank_size_liters.value) : null,
+      frequency_months: form.frequency_months.value ? Number(form.frequency_months.value) : null,
+      region: form.region.value,
+      preferred_date: form.preferred_date.value || null
+    };
+    try {
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) {
+        msg.className = "msg-ok";
+        msg.textContent = "Poptavka prijata. Zkontrolujte e-mail pro potvrzeni.";
+        form.reset();
+      } else {
+        const err = await res.json();
+        msg.className = "msg-err";
+        msg.textContent = "Chyba: " + (err.error || "nelze odeslat");
+      }
+    } catch(err) {
+      msg.className = "msg-err";
+      msg.textContent = "Chyba pri odesilani, zkuste to znovu.";
+    }
+  });
+
+  async function loadHistory() {
+    const email = document.getElementById("history-email").value;
+    const list = document.getElementById("history-list");
+    if (email === "") { list.innerHTML = "<p>Zadejte e-mail.</p>"; return; }
+    list.innerHTML = "<p>Nacitam...</p>";
+    try {
+      const res = await fetch("/api/bookings/history?email=" + encodeURIComponent(email));
+      const bookings = await res.json();
+      if (bookings.length === 0) { list.innerHTML = "<p>Zadne vyjezdy nenalezeny.</p>"; return; }
+      list.innerHTML = bookings.map(b => {
+        const payBtn = (b.status === "pending_partner" || b.status === "awaiting_payment")
+          ? "<button class=\"pay-btn\" onclick=\"createPayment(" + b.id + ")\">Zaplatit</button>"
+          : "";
+        return "<div class=\"booking-card\"><h4>" + b.address + "</h4><span class=\"status s-" + b.status + "\">" + b.status + "</span><p>Region: " + b.region + "</p><p>Termin: " + (b.preferred_date || "neuvedeno") + "</p><p>Cena: " + b.price_czk + " Kc</p>" + payBtn + "</div>";
+      }).join("");
+    } catch(err) {
+      list.innerHTML = "<p>Chyba pri nacitani.</p>";
+    }
+  }
+
+  async function createPayment(bookingId) {
+    try {
+      const res = await fetch("/api/payments/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ booking_id: bookingId })
+      });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+    } catch(err) {
+      alert("Chyba pri vytvareni platby.");
+    }
+  }
+</script>
+</body>
+</html>

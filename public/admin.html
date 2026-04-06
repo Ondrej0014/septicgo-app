@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SepticGo - Admin</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:#f0fdf4;color:#1a1a1a}
+    header{background:#15803d;color:#fff;padding:20px 40px;display:flex;justify-content:space-between;align-items:center}
+    header h1{font-size:1.4rem}
+    nav a{color:#fff;text-decoration:none;margin-left:20px;font-weight:500}
+    .container{max-width:900px;margin:40px auto;padding:0 20px}
+    h2{color:#15803d;margin-bottom:16px;margin-top:40px}
+    input,select{padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:0.95rem;margin-right:8px;margin-bottom:8px}
+    button{padding:11px 22px;background:#15803d;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.95rem}
+    button:hover{background:#166534}
+    .btn-export{background:#0369a1}
+    .btn-export:hover{background:#075985}
+    .stats{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:32px}
+    .stat-card{background:#fff;border:1px solid #d1fae5;border-radius:10px;padding:20px 28px;text-align:center;min-width:140px}
+    .stat-card .num{font-size:2rem;font-weight:700;color:#15803d}
+    .stat-card .label{font-size:0.85rem;color:#555;margin-top:4px}
+    table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.07)}
+    th{background:#15803d;color:#fff;padding:12px 14px;text-align:left;font-size:0.85rem}
+    td{padding:11px 14px;border-bottom:1px solid #f0fdf4;font-size:0.85rem}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:#f0fdf4}
+    .status{display:inline-block;padding:3px 9px;border-radius:20px;font-size:0.78rem;font-weight:600}
+    .s-pending_partner{background:#fef9c3;color:#854d0e}
+    .s-awaiting_payment{background:#dbeafe;color:#1e40af}
+    .s-paid{background:#dcfce7;color:#166534}
+    .s-done{background:#e0e7ff;color:#3730a3}
+    .filters{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:20px;background:#fff;padding:16px;border-radius:10px;border:1px solid #d1fae5}
+    footer{background:#15803d;color:#fff;text-align:center;padding:20px;font-size:0.85rem;margin-top:60px}
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>SepticGo - Admin</h1>
+  <nav>
+    <a href="/">Hlavni stranka</a>
+    <a href="/partner">Partner</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <h2>Prehled</h2>
+  <div class="stats" id="stats">
+    <div class="stat-card"><div class="num" id="s-total">-</div><div class="label">Celkem vyjezdu</div></div>
+    <div class="stat-card"><div class="num" id="s-pending">-</div><div class="label">Ceka na partnera</div></div>
+    <div class="stat-card"><div class="num" id="s-paid">-</div><div class="label">Zaplaceno</div></div>
+    <div class="stat-card"><div class="num" id="s-done">-</div><div class="label">Dokonceno</div></div>
+    <div class="stat-card"><div class="num" id="s-revenue">-</div><div class="label">Celkovy revenue (Kc)</div></div>
+  </div>
+
+  <h2>Vsechny vyjezdy</h2>
+  <div class="filters">
+    <select id="f-status">
+      <option value="">Vsechny statusy</option>
+      <option value="pending_partner">pending_partner</option>
+      <option value="awaiting_payment">awaiting_payment</option>
+      <option value="paid">paid</option>
+      <option value="done">done</option>
+    </select>
+    <input type="text" id="f-region" placeholder="Region" style="width:160px" />
+    <button onclick="loadBookings()">Filtrovat</button>
+  </div>
+  <div id="bookings-table"></div>
+
+  <h2>Export CSV</h2>
+  <div style="background:#fff;padding:20px;border-radius:10px;border:1px solid #d1fae5">
+    abel style="font-weight:600;margin-right:8px">Od:</label>
+    <input type="date" id="exp-from" />
+    abel style="font-weight:600;margin-right:8px">Do:</label>
+    <input type="date" id="exp-to" />
+    <select id="exp-status" style="width:180px">
+      <option value="">Vsechny statusy</option>
+      <option value="pending_partner">pending_partner</option>
+      <option value="awaiting_payment">awaiting_payment</option>
+      <option value="paid">paid</option>
+      <option value="done">done</option>
+    </select>
+    <input type="text" id="exp-region" placeholder="Region (nepovinne)" style="width:180px" />
+    <button class="btn-export" onclick="exportCSV()">Stahnout CSV report</button>
+  </div>
+
+</div>
+
+<footer>2026 SepticGo - Admin panel</footer>
+
+<script>
+  async function loadSummary() {
+    try {
+      const res = await fetch("/api/reporting/summary");
+      const d = await res.json();
+      document.getElementById("s-total").textContent = d.total_bookings || 0;
+      document.getElementById("s-pending").textContent = d.pending || 0;
+      document.getElementById("s-paid").textContent = d.paid || 0;
+      document.getElementById("s-done").textContent = d.done || 0;
+      document.getElementById("s-revenue").textContent = d.total_revenue ? Number(d.total_revenue).toLocaleString("cs-CZ") : "0";
+    } catch(err) { console.error(err); }
+  }
+
+  async function loadBookings() {
+    const status = document.getElementById("f-status").value;
+    const region = document.getElementById("f-region").value;
+    const tableDiv = document.getElementById("bookings-table");
+    tableDiv.innerHTML = "<p>Nacitam...</p>";
+    let url = "/api/bookings?";
+    if (status) url += "status=" + encodeURIComponent(status) + "&";
+    if (region) url += "region=" + encodeURIComponent(region);
+    try {
+      const res = await fetch(url);
+      const bookings = await res.json();
+      if (bookings.length === 0) { tableDiv.innerHTML = "<p>Zadne vyjezdy.</p>"; return; }
+      tableDiv.innerHTML = "<table><thead><tr><th>ID</th><th>Zakaznik</th><th>Adresa</th><th>Region</th><th>Status</th><th>Cena</th><th>Termin</th><th>Vytvoreno</th><th>Akce</th></tr></thead><tbody>" +
+        bookings.map(b =>
+          "<tr><td>" + b.id + "</td><td>" + (b.customer_name || "") + "<br/><small>" + b.customer_email + "</small></td><td>" + b.address + "</td><td>" + b.region + "</td><td><span class=\"status s-" + b.status + "\">" + b.status + "</span></td><td>" + b.price_czk + " Kc</td><td>" + (b.preferred_date || "-") + "</td><td>" + new Date(b.created_at).toLocaleDateString("cs-CZ") + "</td><td><button onclick=\"changeStatus(" + b.id + ")\">Zmenit status</button></td></tr>"
+        ).join("") +
+        "</tbody></table>";
+    } catch(err) {
+      tableDiv.innerHTML = "<p>Chyba pri nacitani.</p>";
+    }
+  }
+
+  async function changeStatus(bookingId) {
+    const newStatus = prompt("Novy status:\npending_partner / awaiting_payment / paid / done");
+    if (newStatus === null || newStatus === "") return;
+    try {
+      const res = await fetch("/api/bookings/" + bookingId, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (res.ok) {
+        alert("Status aktualizovan.");
+        loadBookings();
+        loadSummary();
+      } else {
+        alert("Chyba pri aktualizaci.");
+      }
+    } catch(err) {
+      alert("Chyba.");
+    }
+  }
+
+  function exportCSV() {
+    const from = document.getElementById("exp-from").value;
+    const to = document.getElementById("exp-to").value;
+    const status = document.getElementById("exp-status").value;
+    const region = document.getElementById("exp-region").value;
+    let url = "/api/reporting/export?";
+    if (from) url += "from=" + from + "&";
+    if (to) url += "to=" + to + "&";
+    if (status) url += "status=" + encodeURIComponent(status) + "&";
+    if (region) url += "region=" + encodeURIComponent(region);
+    window.location.href = url;
+  }
+
+  loadSummary();
+  loadBookings();
+</script>
+</body>
+</html>
