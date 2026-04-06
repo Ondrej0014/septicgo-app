@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SepticGo | Moje rezervace</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --sf-blue: #0071e3; --sf-bg: #f5f5f7; --sf-dark: #1d1d1f; }
+    body {
+      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(56,189,248,0.12), transparent 45%),
+        radial-gradient(circle at 80% 0%, rgba(59,130,246,0.18), transparent 55%),
+        radial-gradient(circle at 50% 80%, rgba(15,23,42,0.10), transparent 55%),
+        #f5f7fb;
+      color: var(--sf-dark);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    body::after {
+      content: "";
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='noStitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+      z-index: -1;
+    }
+    .apple-glass {
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .btn-apple {
+      background: linear-gradient(135deg, #0071e3, #3b82f6);
+      color: #fff;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(0,113,227,0.22);
+    }
+    .btn-apple:hover:not(:disabled) {
+      transform: translateY(-1px) scale(1.02);
+      box-shadow: 0 18px 40px rgba(37,99,235,0.3);
+    }
+    .sf-card {
+      border-radius: 2rem;
+      background: #fff;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .sf-input {
+      width: 100%; padding: 12px 16px;
+      border: 1.5px solid #e5e7eb; border-radius: 0.75rem;
+      font-size: 0.95rem; font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s; outline: none;
+    }
+    .sf-input:focus { border-color: #0071e3; }
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 9999px;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.02em;
+    }
+    .s-pending_partner { background: #fef9c3; color: #92400e; }
+    .s-awaiting_payment { background: #dbeafe; color: #1e40af; }
+    .s-paid { background: #dcfce7; color: #166534; }
+    .s-done { background: #e0e7ff; color: #3730a3; }
+    .s-cancelled { background: #fee2e2; color: #991b1b; }
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal-visible { opacity: 1; transform: translateY(0); }
+    .booking-card { transition: box-shadow 0.2s, transform 0.2s; }
+    .booking-card:hover { box-shadow: 0 24px 50px rgba(0,0,0,0.09); transform: translateY(-2px); }
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px); z-index: 100;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+    }
+    .modal-overlay.hidden { display: none; }
+    .photo-thumb {
+      width: 80px; height: 64px; object-fit: cover;
+      border-radius: 0.5rem; border: 1px solid #e5e7eb;
+      cursor: pointer; transition: transform 0.2s;
+    }
+    .photo-thumb:hover { transform: scale(1.05); }
+  </style>
+</head>
+<body class="antialiased min-h-screen">
+
+<!-- NAV -->
+<nav class="sticky top-0 z-50 apple-glass border-b border-gray-200/70">
+  <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+    <a href="/" class="flex items-center space-x-2">
+      <div class="w-7 h-7 rounded-full bg-blue-500/90 relative overflow-hidden flex items-center justify-center">
+        <div class="absolute inset-1 rounded-full border-2 border-white/60"></div>
+        <div class="absolute bottom-0 inset-x-1 h-[40%] bg-blue-900/70 rounded-b-full"></div>
+      </div>
+      <span class="text-base md:text-lg font-semibold tracking-tight">SepticGo</span>
+    </a>
+    <div class="hidden md:flex items-center space-x-8 text-xs font-medium">
+      <a href="/" class="text-gray-500 hover:text-black transition">Domů</a>
+      <a href="/booking" class="text-blue-600 hover:text-blue-700 font-semibold">Objednat vývoz</a>
+    </div>
+    <div class="hidden md:flex items-center space-x-4 text-[11px] text-gray-500">
+      <span class="font-medium text-gray-700">+420 705 908 970</span>
+      <a href="mailto:go@septicgo.com" class="hover:text-blue-600 transition">go@septicgo.com</a>
+    </div>
+  </div>
+</nav>
+
+<div class="max-w-3xl mx-auto px-4 py-12">
+
+  <!-- Header -->
+  <div class="mb-10 reveal" id="r1">
+    <h1 class="text-3xl font-bold tracking-tight mb-2">Moje rezervace</h1>
+    <p class="text-gray-500 text-sm">Zadejte svůj e-mail pro zobrazení vašich výjezdů.</p>
+  </div>
+
+  <!-- Email lookup -->
+  <div class="sf-card p-6 mb-8 reveal" id="r2">
+    <div class="flex gap-3">
+      <input type="email" id="lookup-email" class="sf-input flex-1" placeholder="váš@email.cz"
+        onkeydown="if(event.key==='Enter') loadBookings()">
+      <button class="btn-apple px-6 py-3 rounded-xl font-semibold text-sm whitespace-nowrap" onclick="loadBookings()">
+        Zobrazit
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading / empty / error states -->
+  <div id="state-loading" class="hidden text-center py-16">
+    <div class="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+    <p class="text-gray-400 text-sm">Načítám rezervace...</p>
+  </div>
+
+  <div id="state-empty" class="hidden sf-card p-12 text-center">
+    <svg class="w-12 h-12 text-gray-200 mx-auto mb-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+    </svg>
+    <p class="text-gray-400 font-medium">Žádné rezervace nenalezeny</p>
+    <p class="text-gray-300 text-sm mt-1">Pro tento e-mail nejsou evidovány žádné výjezdy.</p>
+    <a href="/booking" class="btn-apple inline-block mt-6 px-6 py-3 rounded-full text-sm font-semibold">Objednat první vývoz</a>
+  </div>
+
+  <div id="state-error" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-2xl p-5 text-sm"></div>
+
+  <!-- Bookings list -->
+  <div id="bookings-list" class="space-y-4"></div>
+
+</div>
+
+<!-- Detail modal -->
+<div class="modal-overlay hidden" id="detail-modal">
+  <div class="sf-card w-full max-w-lg max-h-[90vh] overflow-y-auto p-8 relative">
+    <button onclick="closeModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+      <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="modal-overlay hidden" id="lightbox" onclick="document.getElementById('lightbox').classList.add('hidden')">
+  <img id="lightbox-img" src="" class="max-w-full max-h-[90vh] rounded-2xl shadow-2xl">
+</div>
+
+<footer class="mt-16 border-t border-gray-100 py-8 text-center text-xs text-gray-400">
+  &copy; 2026 SepticGo &mdash; Vývoz jímek bez starostí &mdash;
+  <a href="mailto:go@septicgo.com" class="hover:text-blue-600 transition">go@septicgo.com</a>
+</footer>
+
+<script>
+  // ─── Status labels ─────────────────────────────────────────────────────────────
+  const STATUS = {
+    pending_partner: { label: 'Čeká na partnera', dot: '🟡' },
+    awaiting_payment: { label: 'Čeká na platbu', dot: '🔵' },
+    paid: { label: 'Zaplaceno', dot: '🟢' },
+    done: { label: 'Dokončeno', dot: '✅' },
+    cancelled: { label: 'Zrušeno', dot: '🔴' },
+  };
+
+  function statusBadge(s) {
+    const info = STATUS[s] || { label: s, dot: '⚪' };
+    return '<span class="status-badge s-' + s + '">' + info.dot + ' ' + info.label + '</span>';
+  }
+
+  // ─── Load bookings ─────────────────────────────────────────────────────────────
+  async function loadBookings() {
+    const email = document.getElementById('lookup-email').value.trim();
+    if (!email || !email.includes('@')) {
+      document.getElementById('state-error').textContent = 'Zadejte platnou e-mailovou adresu.';
+      document.getElementById('state-error').classList.remove('hidden');
+      return;
+    }
+    document.getElementById('state-error').classList.add('hidden');
+    document.getElementById('state-empty').classList.add('hidden');
+    document.getElementById('bookings-list').innerHTML = '';
+    document.getElementById('state-loading').classList.remove('hidden');
+
+    try {
+      const res = await fetch('/api/bookings/history?email=' + encodeURIComponent(email));
+      const bookings = await res.json();
+      document.getElementById('state-loading').classList.add('hidden');
+
+      if (!Array.isArray(bookings) || bookings.length === 0) {
+        document.getElementById('state-empty').classList.remove('hidden');
+        return;
+      }
+
+      const list = document.getElementById('bookings-list');
+      bookings.forEach((b, i) => {
+        const card = document.createElement('div');
+        card.className = 'sf-card booking-card p-6 reveal';
+        card.style.transitionDelay = (i * 0.07) + 's';
+
+        const date = b.preferred_date ? new Date(b.preferred_date).toLocaleDateString('cs-CZ') : 'Neurčeno';
+        const created = new Date(b.created_at).toLocaleDateString('cs-CZ');
+        const canPay = (b.status === 'pending_partner' || b.status === 'awaiting_payment');
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-base truncate">${escHtml(b.address)}</h3>
+              <p class="text-xs text-gray-400 mt-0.5">Rezervace #${b.id} &middot; vytvořeno ${created}</p>
+            </div>
+            ${statusBadge(b.status)}
+          </div>
+          <div class="grid grid-cols-2 gap-3 text-sm mb-4">
+            <div class="bg-gray-50 rounded-xl px-4 py-3">
+              <div class="text-xs text-gray-400 mb-1">Termín</div>
+              <div class="font-medium">${date}</div>
+            </div>
+            <div class="bg-gray-50 rounded-xl px-4 py-3">
+              <div class="text-xs text-gray-400 mb-1">Cena</div>
+              <div class="font-medium">${Number(b.price_czk).toLocaleString('cs-CZ')} Kč</div>
+            </div>
+            <div class="bg-gray-50 rounded-xl px-4 py-3">
+              <div class="text-xs text-gray-400 mb-1">Jímka</div>
+              <div class="font-medium">${b.tank_size_liters ? b.tank_size_liters.toLocaleString('cs-CZ') + ' l' : '—'}</div>
+            </div>
+            <div class="bg-gray-50 rounded-xl px-4 py-3">
+              <div class="text-xs text-gray-400 mb-1">Region</div>
+              <div class="font-medium">${escHtml(b.region || '—')}</div>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="showDetail(${b.id})"
+              class="flex-1 py-2.5 rounded-xl text-sm font-medium border-2 border-gray-200 text-gray-600 hover:border-gray-300 transition">
+              Detail
+            </button>
+            ${canPay ? `<button onclick="payBooking(${b.id})"
+              class="flex-1 btn-apple py-2.5 rounded-xl text-sm font-semibold">
+              Zaplatit
+            </button>` : ''}
+          </div>
+        `;
+        list.appendChild(card);
+      });
+
+      // trigger reveal
+      setTimeout(() => {
+        document.querySelectorAll('.reveal').forEach(el => el.classList.add('reveal-visible'));
+      }, 50);
+
+    } catch (err) {
+      document.getElementById('state-loading').classList.add('hidden');
+      document.getElementById('state-error').textContent = 'Nepodařilo se načíst rezervace. Zkuste to znovu.';
+      document.getElementById('state-error').classList.remove('hidden');
+    }
+  }
+
+  // ─── Detail modal ─────────────────────────────────────────────────────────────
+  async function showDetail(bookingId) {
+    const modal = document.getElementById('detail-modal');
+    const content = document.getElementById('modal-content');
+    modal.classList.remove('hidden');
+    content.innerHTML = '<div class="flex justify-center py-8"><div class="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div></div>';
+
+    try {
+      const [bRes, pRes] = await Promise.all([
+        fetch('/api/bookings/' + bookingId),
+        fetch('/api/uploads/' + bookingId + '/photos'),
+      ]);
+      const b = await bRes.json();
+      const photos = await pRes.json();
+
+      const date = b.preferred_date ? new Date(b.preferred_date).toLocaleDateString('cs-CZ') : 'Neurčeno';
+
+      const photoHtml = photos.length > 0
+        ? '<div class="flex flex-wrap gap-2 mt-2">' +
+          photos.map(p => `<img src="${escHtml(p.url)}" class="photo-thumb" onclick="openLightbox('${escHtml(p.url)}')">`).join('') +
+          '</div>'
+        : '<p class="text-xs text-gray-400 mt-1">Žádné fotografie</p>';
+
+      content.innerHTML = `
+        <div class="flex items-start justify-between gap-4 mb-6">
+          <h2 class="text-xl font-bold tracking-tight">${escHtml(b.address)}</h2>
+          ${statusBadge(b.status)}
+        </div>
+        <div class="space-y-3 text-sm mb-6">
+          <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-400">ID rezervace</span><span class="font-medium">#${b.id}</span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-400">Zákazník</span><span class="font-medium">${escHtml(b.customer_name || '—')}</span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-400">E-mail</span><span class="font-medium">${escHtml(b.customer_email)}</span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-400">Telefon</span><span class="font-medium">${escHtml(b.customer_phone || '—')}</span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-400">Termín</span><span class="font-medium">${date}</span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-400">Region</span><span class="font-medium">${escHtml(b.region || '—')}</span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-400">Jímka</span><span class="font-medium">${b.tank_size_liters ? b.tank_size_liters.toLocaleString('cs-CZ') + ' l' : '—'}</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-400">Cena</span><span class="font-bold text-blue-600 text-base">${Number(b.price_czk).toLocaleString('cs-CZ')} Kč</span>
+          </div>
+        </div>
+        <div class="mb-4">
+          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Fotografie</p>
+          ${photoHtml}
+        </div>
+        ${(b.status === 'pending_partner' || b.status === 'awaiting_payment') ? `
+          <button onclick="payBooking(${b.id})" class="btn-apple w-full py-3 rounded-xl font-semibold text-sm mt-2">
+            Zaplatit nyní
+          </button>` : ''}
+      `;
+    } catch (err) {
+      content.innerHTML = '<p class="text-red-500 text-sm py-4 text-center">Nepodařilo se načíst detail.</p>';
+    }
+  }
+
+  function closeModal() {
+    document.getElementById('detail-modal').classList.add('hidden');
+  }
+
+  // Close modal on backdrop click
+  document.getElementById('detail-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // ─── Payment ──────────────────────────────────────────────────────────────────
+  async function payBooking(bookingId) {
+    try {
+      const res = await fetch('/api/payments/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ booking_id: bookingId }),
+      });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+      else alert('Nepodařilo se vytvořit platbu.');
+    } catch (err) {
+      alert('Chyba při vytváření platby.');
+    }
+  }
+
+  // ─── Lightbox ─────────────────────────────────────────────────────────────────
+  function openLightbox(url) {
+    document.getElementById('lightbox-img').src = url;
+    document.getElementById('lightbox').classList.remove('hidden');
+  }
+
+  // ─── Helpers ──────────────────────────────────────────────────────────────────
+  function escHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // ─── Reveal animation ─────────────────────────────────────────────────────────
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('reveal-visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ─── Pre-fill email from URL param ────────────────────────────────────────────
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('email')) {
+    document.getElementById('lookup-email').value = params.get('email');
+    loadBookings();
+  }
+  if (params.get('payment') === 'success') {
+    const banner = document.createElement('div');
+    banner.className = 'bg-green-50 border border-green-200 text-green-700 rounded-2xl p-4 text-sm font-medium mb-6 flex items-center gap-2';
+    banner.innerHTML = '<span>✅</span><span>Platba proběhla úspěšně! Potvrzení bylo odesláno e-mailem.</span>';
+    document.querySelector('.max-w-3xl').insertBefore(banner, document.querySelector('.max-w-3xl').children[1]);
+  }
+</script>
+</body>
+</html>

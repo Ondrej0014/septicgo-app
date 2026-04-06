@@ -31,6 +31,8 @@ app.use("/api/reporting", reportingRouter);
 // Podstranky
 app.get("/partner", (req, res) => res.sendFile(path.join(__dirname, "..", "public", "partner.html")));
 app.get("/admin", (req, res) => res.sendFile(path.join(__dirname, "..", "public", "admin.html")));
+app.get("/booking", (req, res) => res.sendFile(path.join(__dirname, "..", "public", "booking.html")));
+app.get("/dashboard", (req, res) => res.sendFile(path.join(__dirname, "..", "public", "dashboard.html")));
 
 // Fallback
 app.get("*", (req, res) => res.sendFile(path.join(__dirname, "..", "public", "index.html")));
