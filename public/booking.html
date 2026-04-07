@@ -254,11 +254,11 @@
         </div>
         <div class="option-card p-4 text-center selected" data-group="freq" data-value="6">
           <div class="text-sm font-bold text-gray-700">Každých 6 měs.</div>
-          <div class="text-xs text-green-600 font-semibold mt-1">-15 %</div>
+          <div class="text-xs text-green-600 font-semibold mt-1">-20 % · nejlepší cena</div>
         </div>
         <div class="option-card p-4 text-center" data-group="freq" data-value="12">
           <div class="text-sm font-bold text-gray-700">Jednou ročně</div>
-          <div class="text-xs text-green-600 font-semibold mt-1">-25 %</div>
+          <div class="text-xs text-green-600 font-semibold mt-1">-10 %</div>
         </div>
       </div>
     </div>
@@ -551,8 +551,8 @@
   };
 
   // ─── Price calculation ────────────────────────────────────────────────────────
-  const SIZE_MULT = { 5000: 1.0, 8000: 1.5, 12000: 2.1 };
-  const FREQ_DISC = { 0: 0, 6: 0.15, 12: 0.25 };
+  const SIZE_MULT = { 5000: 1.0, 8000: 1.4, 12000: 1.9 };
+  const FREQ_DISC = { 0: 0, 6: 0.20, 12: 0.10 };
   const BASE = 2500;
 
   function calcPrice() {
@@ -567,7 +567,7 @@
     const disc = FREQ_DISC[state.freq];
     document.getElementById('price-preview').textContent = price.toLocaleString('cs-CZ') + ' Kč';
     document.getElementById('price-base-note').textContent = 'základ ' + BASE + ' Kč × ' + mult;
-    document.getElementById('price-discount-note').textContent = disc > 0 ? 'sleva ' + (disc * 100) + ' %' : '';
+    document.getElementById('price-discount-note').textContent = disc > 0 ? 'sleva ' + Math.round(disc * 100) + ' %' : '';
   }
 
   // ─── Option cards ─────────────────────────────────────────────────────────────
@@ -630,7 +630,7 @@
 
   // ─── Summary fill ─────────────────────────────────────────────────────────────
   const TYPE_LABELS = { rodinny_dum: 'Rodinný dům', chata: 'Chata / chalupa', firma: 'Firma / provozovna' };
-  const FREQ_LABELS = { 0: 'Jednorázově', 6: 'Každých 6 měsíců', 12: 'Jednou ročně' };
+  const FREQ_LABELS = { 0: 'Jednorázově', 6: 'Každých 6 měsíců (−20 %)', 12: 'Jednou ročně (−10 %)' };
 
   function fillSummary() {
     document.getElementById('sum-size').textContent = state.size.toLocaleString('cs-CZ') + ' l';
