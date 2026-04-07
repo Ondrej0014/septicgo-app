@@ -88,22 +88,72 @@
 <body class="antialiased min-h-screen">
 
 <!-- NAV -->
-<nav class="sticky top-0 z-50 apple-glass border-b border-gray-200/70">
-  <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-    <a href="/" class="flex items-center space-x-2">
-      <div class="w-7 h-7 rounded-full bg-blue-500/90 relative overflow-hidden flex items-center justify-center">
-        <div class="absolute inset-1 rounded-full border-2 border-white/60"></div>
-        <div class="absolute bottom-0 inset-x-1 h-[40%] bg-blue-900/70 rounded-b-full"></div>
-      </div>
-      <span class="text-base md:text-lg font-semibold tracking-tight">SepticGo</span>
+<style>
+  .sg-nav { position:fixed; top:0; left:0; right:0; z-index:100; height:58px; background:rgba(245,247,251,0.80); backdrop-filter:blur(32px) saturate(200%); -webkit-backdrop-filter:blur(32px) saturate(200%); border-bottom:1px solid rgba(255,255,255,0.6); box-shadow:0 1px 0 rgba(0,0,0,0.05),0 4px 24px rgba(0,0,0,0.04); }
+  .sg-nav-inner { max-width:1140px; margin:0 auto; padding:0 1.5rem; height:100%; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+  .sg-logo { display:flex; align-items:center; gap:9px; text-decoration:none; color:#1d1d1f; }
+  .sg-logo-mark { width:30px; height:30px; border-radius:50%; background:linear-gradient(145deg,#3b82f6 0%,#0071e3 60%,#0058b0 100%); position:relative; overflow:hidden; box-shadow:0 4px 14px rgba(0,113,227,0.35),inset 0 1px 0 rgba(255,255,255,0.35); flex-shrink:0; }
+  .sg-logo-mark::before { content:""; position:absolute; inset:3px; border-radius:50%; border:1.5px solid rgba(255,255,255,0.45); }
+  .sg-logo-mark::after { content:""; position:absolute; bottom:0; left:3px; right:3px; height:38%; background:rgba(0,20,60,0.45); border-radius:50% 50% 0 0; }
+  .sg-logo-text { font-size:1.05rem; font-weight:700; letter-spacing:-.025em; }
+  .sg-nav-links { display:flex; align-items:center; gap:1.75rem; list-style:none; }
+  .sg-nav-links a { font-size:.8rem; font-weight:500; color:#6e6e73; text-decoration:none; transition:color .2s; }
+  .sg-nav-links a:hover { color:#1d1d1f; }
+  .sg-nav-right { display:flex; align-items:center; gap:9px; }
+  .sg-btn-ghost { font-size:.77rem; font-weight:600; color:#6e6e73; text-decoration:none; padding:7px 13px; border-radius:9999px; border:1.5px solid rgba(0,0,0,0.10); background:rgba(255,255,255,0.6); backdrop-filter:blur(10px); transition:all .2s; display:inline-flex; align-items:center; gap:5px; cursor:pointer; font-family:inherit; }
+  .sg-btn-ghost:hover { color:#1d1d1f; border-color:rgba(0,0,0,0.2); background:rgba(255,255,255,0.9); }
+  .sg-btn-nav { background:linear-gradient(135deg,#0071e3,#3b82f6); color:#fff; border:none; padding:8px 20px; border-radius:9999px; font-size:.8rem; font-weight:700; cursor:pointer; text-decoration:none; box-shadow:0 4px 16px rgba(0,113,227,0.28); transition:all .25s; font-family:inherit; }
+  .sg-btn-nav:hover { transform:translateY(-1px); box-shadow:0 8px 24px rgba(0,113,227,0.38); }
+  /* Auth modal */
+  .sg-modal-bg { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.45); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity .25s; }
+  .sg-modal-bg.open { opacity:1; pointer-events:all; }
+  .sg-auth-card { background:rgba(255,255,255,0.92); backdrop-filter:blur(40px) saturate(180%); border:1px solid rgba(255,255,255,0.7); border-radius:2rem; padding:40px; width:100%; max-width:400px; box-shadow:0 40px 80px rgba(0,0,0,0.2),inset 0 1px 0 rgba(255,255,255,1); position:relative; }
+  .sg-auth-close { position:absolute; top:16px; right:16px; width:32px; height:32px; border-radius:50%; background:rgba(0,0,0,0.06); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#6e6e73; transition:background .2s; }
+  .sg-auth-close:hover { background:rgba(0,0,0,0.1); }
+  .sg-social-btn { width:100%; padding:12px 16px; border-radius:12px; border:1.5px solid rgba(0,0,0,0.10); background:rgba(255,255,255,0.8); font-family:inherit; font-size:.85rem; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:all .2s; margin-bottom:10px; color:#1d1d1f; }
+  .sg-social-btn:hover { background:#fff; border-color:rgba(0,0,0,0.2); box-shadow:0 4px 16px rgba(0,0,0,0.08); }
+  .sg-social-btn.apple { background:#000; color:#fff; border-color:#000; }
+  .sg-social-btn.apple:hover { background:#1a1a1a; }
+  .sg-divider { display:flex; align-items:center; gap:12px; margin:18px 0; color:#d1d5db; font-size:.78rem; font-weight:500; }
+  .sg-divider::before,.sg-divider::after { content:""; flex:1; height:1px; background:rgba(0,0,0,0.08); }
+  .sg-auth-input { width:100%; padding:11px 14px; border-radius:12px; border:1.5px solid rgba(0,0,0,0.10); background:rgba(255,255,255,0.9); font-family:inherit; font-size:.88rem; color:#1d1d1f; outline:none; transition:border-color .2s; margin-bottom:10px; }
+  .sg-auth-input:focus { border-color:#0071e3; box-shadow:0 0 0 3px rgba(0,113,227,0.10); }
+  /* Footer */
+  .sg-footer { background:#fff; border-top:1px solid rgba(0,0,0,0.06); }
+  .sg-footer-inner { max-width:1140px; margin:0 auto; padding:56px 1.5rem 36px; }
+  .sg-footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:3rem; margin-bottom:36px; }
+  .sg-footer-brand p { font-size:.82rem; color:#9ca3af; line-height:1.7; margin-top:14px; }
+  .sg-footer-col h4 { font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#9ca3af; margin-bottom:14px; }
+  .sg-footer-col ul { list-style:none; }
+  .sg-footer-col ul li { margin-bottom:9px; }
+  .sg-footer-col ul li a { font-size:.82rem; color:#6e6e73; text-decoration:none; transition:color .2s; }
+  .sg-footer-col ul li a:hover { color:#1d1d1f; }
+  .sg-footer-bottom { padding-top:1.5rem; border-top:1px solid #f3f4f6; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .sg-footer-bottom p { font-size:.75rem; color:#d1d5db; }
+  @media (max-width:900px) { .sg-nav-links { display:none; } .sg-footer-grid { grid-template-columns:1fr 1fr; gap:2rem; } }
+  body { padding-top:58px; }
+</style>
+<nav class="sg-nav">
+  <div class="sg-nav-inner">
+    <a href="/" class="sg-logo">
+      <div class="sg-logo-mark"></div>
+      <span class="sg-logo-text">SepticGo</span>
     </a>
-    <div class="hidden md:flex items-center space-x-8 text-xs font-medium">
-      <a href="/" class="text-gray-500 hover:text-black transition">Domů</a>
-      <a href="/booking" class="text-blue-600 hover:text-blue-700 font-semibold">Objednat vývoz</a>
-    </div>
-    <div class="hidden md:flex items-center space-x-4 text-[11px] text-gray-500">
-      <span class="font-medium text-gray-700">+420 705 908 970</span>
-      <a href="mailto:go@septicgo.com" class="hover:text-blue-600 transition">go@septicgo.com</a>
+    <ul class="sg-nav-links">
+      <li><a href="/#jak-to-funguje">Jak to funguje</a></li>
+      <li><a href="/#cenik">Ceník</a></li>
+      <li><a href="/#faq">FAQ</a></li>
+    </ul>
+    <div class="sg-nav-right">
+      <button onclick="openSgAuth('login')" class="sg-btn-ghost">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+        Přihlásit se
+      </button>
+      <a href="/partner" class="sg-btn-ghost">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg>
+        Pro partnery
+      </a>
+      <a href="/booking" class="sg-btn-nav">Objednat vývoz →</a>
     </div>
   </div>
 </nav>
@@ -166,10 +216,115 @@
   <img id="lightbox-img" src="" class="max-w-full max-h-[90vh] rounded-2xl shadow-2xl">
 </div>
 
-<footer class="mt-16 border-t border-gray-100 py-8 text-center text-xs text-gray-400">
-  &copy; 2026 SepticGo &mdash; Vývoz jímek bez starostí &mdash;
-  <a href="mailto:go@septicgo.com" class="hover:text-blue-600 transition">go@septicgo.com</a>
+<!-- AUTH MODAL -->
+<div id="sg-auth-modal" class="sg-modal-bg" onclick="if(event.target===this)closeSgAuth()">
+  <div class="sg-auth-card">
+    <button class="sg-auth-close" onclick="closeSgAuth()">
+      <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+    <div style="display:flex;justify-content:center;margin-bottom:18px">
+      <div class="sg-logo-mark" style="width:44px;height:44px"></div>
+    </div>
+    <h2 style="font-size:1.3rem;font-weight:800;text-align:center;letter-spacing:-.035em;margin-bottom:5px" id="sg-auth-title">Přihlásit se</h2>
+    <p style="font-size:.83rem;color:#6e6e73;text-align:center;margin-bottom:24px" id="sg-auth-sub">Zobrazit vaše rezervace a faktury</p>
+    <button class="sg-social-btn apple" onclick="window.location.href='/api/auth/apple'">
+      <svg width="16" height="16" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 391.2 0 229.9 0 79.4c0-75.9 8-151.2 70.5-151.2 54.3 0 98.3 36.8 132 36.8 32.1 0 82.4-38.8 127.8-38.8 19.5 0 76.9 3.2 116.3 61.6zm-71.1-192.5c3.9-43.5 17.2-88.4 49.4-124 30-33.2 77.2-56.4 118.1-56.4 3.2 29.9-7.8 59.8-28.4 82.4-20.7 23.9-56.4 43.5-95.8 40.9z"/></svg>
+      Pokračovat přes Apple
+    </button>
+    <button class="sg-social-btn" onclick="window.location.href='/api/auth/google'">
+      <svg width="16" height="16" viewBox="0 0 533 544" fill="none"><path fill="#4285F4" d="M533.5 278.4c0-18.5-1.5-37.1-4.7-55.3H272.1v104.8h147c-6.1 33.8-25.7 63.7-54.4 82.7v68h87.7c51.5-47.4 81.1-117.4 81.1-200.2z"/><path fill="#34A853" d="M272.1 544c73.4 0 135.3-24.1 180.4-65.7l-87.7-68c-24.4 16.6-55.9 26-92.6 26-71 0-131.2-47.9-152.8-112.3H28.9v70.1C75.1 486.3 169.2 544 272.1 544z"/><path fill="#FBBC04" d="M119.3 324c-11.4-33.8-11.4-70.4 0-104.2V149.7H28.9c-38.6 76.9-38.6 167.5 0 244.4L119.3 324z"/><path fill="#EA4335" d="M272.1 107.7c38.8-.6 76.3 14 104.4 40.8l77.7-77.7C405 24.6 339.7-.8 272.1 0 169.2 0 75.1 57.8 28.9 149.7l90.4 70.1c21.5-64.5 81.8-112.1 152.8-112.1z"/></svg>
+      Pokračovat přes Google
+    </button>
+    <div class="sg-divider">nebo e-mailem</div>
+    <form onsubmit="submitSgAuth(event)">
+      <div id="sg-auth-name-row" style="display:none"><input type="text" class="sg-auth-input" id="sg-auth-name" placeholder="Celé jméno"></div>
+      <input type="email" class="sg-auth-input" id="sg-auth-email" placeholder="E-mail" required>
+      <input type="password" class="sg-auth-input" id="sg-auth-pass" placeholder="Heslo" required>
+      <button type="submit" class="btn-apple w-full py-3 rounded-xl font-semibold text-sm mt-1" id="sg-auth-btn">Přihlásit se</button>
+    </form>
+    <p style="text-align:center;margin-top:14px;font-size:.8rem;color:#6e6e73">
+      <span id="sg-auth-toggle-txt">Nemáte účet?</span>
+      <a onclick="toggleSgAuth()" id="sg-auth-toggle-lnk" style="color:#0071e3;font-weight:600;cursor:pointer;margin-left:5px">Registrovat se</a>
+    </p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="sg-footer" style="margin-top:4rem">
+  <div class="sg-footer-inner">
+    <div class="sg-footer-grid">
+      <div class="sg-footer-brand">
+        <a href="/" class="sg-logo">
+          <div class="sg-logo-mark"></div>
+          <span class="sg-logo-text" style="font-size:.95rem">SepticGo</span>
+        </a>
+        <p>Pravidelný vývoz jímky pro domy, chaty a provozovny. Ověření partneři, cena dopředu, výjezd i bez vaší přítomnosti.</p>
+        <p style="margin-top:12px;font-size:.78rem;color:#9ca3af">
+          <a href="tel:+420705908970" style="color:#6e6e73;text-decoration:none;display:block;margin-bottom:4px">+420 705 908 970</a>
+          <a href="mailto:go@septicgo.com" style="color:#6e6e73;text-decoration:none">go@septicgo.com</a>
+        </p>
+      </div>
+      <div class="sg-footer-col">
+        <h4>Služba</h4>
+        <ul>
+          <li><a href="/#jak-to-funguje">Jak to funguje</a></li>
+          <li><a href="/#cenik">Ceník</a></li>
+          <li><a href="/#faq">FAQ</a></li>
+          <li><a href="/booking">Objednat výjezd</a></li>
+        </ul>
+      </div>
+      <div class="sg-footer-col">
+        <h4>Klientský portál</h4>
+        <ul>
+          <li><a href="/dashboard">Přehled rezervací</a></li>
+          <li><a href="/booking">Nová objednávka</a></li>
+          <li><a href="/dashboard">Historie výjezdů</a></li>
+          <li><a href="/dashboard">Faktury ke stažení</a></li>
+        </ul>
+      </div>
+      <div class="sg-footer-col">
+        <h4>Pro partnery</h4>
+        <ul>
+          <li><a href="/partner">Portál partnera</a></li>
+          <li><a href="/partner">Přijaté zakázky</a></li>
+          <li><a href="/partner#stat-se-partnerem">Stát se partnerem</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="sg-footer-bottom">
+      <p>&copy; 2026 SepticGo. Všechna práva vyhrazena.</p>
+      <p>Praha a Středočeský kraj</p>
+    </div>
+  </div>
 </footer>
+
+<script>
+  let sgAuthMode = 'login';
+  function openSgAuth(m) { sgAuthMode = m||'login'; updateSgAuthUI(); document.getElementById('sg-auth-modal').classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeSgAuth() { document.getElementById('sg-auth-modal').classList.remove('open'); document.body.style.overflow=''; }
+  function toggleSgAuth() { sgAuthMode = sgAuthMode==='login'?'register':'login'; updateSgAuthUI(); }
+  function updateSgAuthUI() {
+    const l = sgAuthMode==='login';
+    document.getElementById('sg-auth-title').textContent = l?'Přihlásit se':'Registrovat se';
+    document.getElementById('sg-auth-sub').textContent = l?'Zobrazit vaše rezervace a faktury':'Vytvořte si účet zdarma';
+    document.getElementById('sg-auth-btn').textContent = l?'Přihlásit se':'Vytvořit účet';
+    document.getElementById('sg-auth-toggle-txt').textContent = l?'Nemáte účet?':'Máte již účet?';
+    document.getElementById('sg-auth-toggle-lnk').textContent = l?'Registrovat se':'Přihlásit se';
+    document.getElementById('sg-auth-name-row').style.display = l?'none':'block';
+  }
+  async function submitSgAuth(e) {
+    e.preventDefault();
+    const ep = sgAuthMode==='login'?'/api/auth/login':'/api/auth/register';
+    const body = { email: document.getElementById('sg-auth-email').value, password: document.getElementById('sg-auth-pass').value };
+    if (sgAuthMode==='register') body.name = document.getElementById('sg-auth-name').value;
+    try {
+      const res = await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+      const data = await res.json();
+      if (res.ok) { closeSgAuth(); if (data.email) { document.getElementById('lookup-email').value=data.email; loadBookings(); } }
+      else alert(data.message||'Chyba při přihlášení.');
+    } catch { alert('Chyba připojení.'); }
+  }
+</script>
 
 <script>
   // ─── Status labels ─────────────────────────────────────────────────────────────
