@@ -3,1069 +3,803 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SepticGo | Vývoz jímky bez hlídání termínů</title>
-
-  <meta name="description" content="SepticGo naplánuje pravidelný vývoz jímky za vás — s přehledem ceny, připomínkami a ověřenými partnery v regionu. Pro domy, chaty i menší objekty bez kanalizace v Praze a Středočeském kraji.">
-  <meta name="robots" content="index,follow">
-
-  <!-- Canonical URL (uprav na finální doménu) -->
+  <title>SepticGo | Vývoz jímky bez starostí</title>
+  <meta name="description" content="Pravidelný vývoz jímky pro domy a chaty. Cena dopředu, ověření partneři, výjezd i bez vaší přítomnosti. Praha a Středočeský kraj.">
   <link rel="canonical" href="https://www.septicgo.com/">
-
-  <!-- Open Graph -->
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="cs_CZ">
-  <meta property="og:title" content="SepticGo | Vývoz jímky bez hlídání termínů">
-  <meta property="og:description" content="Pravidelný vývoz jímky bez starostí. Nastavíte jednou, my hlídáme termíny, cenu a ověřené partnery v regionu.">
-  <meta property="og:url" content="https://www.septicgo.com/">
-  <meta property="og:site_name" content="SepticGo">
-  <!-- TODO: nahraď konkrétním obrázkem (hero mockup 1200x630) -->
-  <meta property="og:image" content="https://www.septicgo.com/og-image-septicgo.jpg">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="SepticGo | Vývoz jímky bez hlídání termínů">
-  <meta name="twitter:description" content="Chytrý vývoz jímky pro domy a chaty. Orientační cena dopředu, ověření partneři a vývoz i bez vaší přítomnosti.">
-  <meta name="twitter:image" content="https://www.septicgo.com/og-image-septicgo.jpg">
-
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --sf-blue: #0071e3;
-      --sf-bg: #f5f5f7;
-      --sf-dark: #1d1d1f;
-    }
-
-    /* symetričtější background + jemný noise overlay */
+    :root { --blue:#0071e3; --dark:#1d1d1f; --gray:#6e6e73; --light:#f5f7fb; }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
     body {
-      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      font-family:'Inter',-apple-system,sans-serif;
+      background:var(--light); color:var(--dark);
+      -webkit-font-smoothing:antialiased; overflow-x:hidden;
+    }
+    body::before {
+      content:""; pointer-events:none; position:fixed; inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.022'/%3E%3C/svg%3E");
+      mix-blend-mode:overlay; z-index:9999;
+    }
+
+    /* Liquid Glass */
+    .glass { background:rgba(255,255,255,0.72); backdrop-filter:blur(28px) saturate(180%); -webkit-backdrop-filter:blur(28px) saturate(180%); border:1px solid rgba(255,255,255,0.55); box-shadow:0 8px 32px rgba(0,0,0,0.07),inset 0 1px 0 rgba(255,255,255,0.9); }
+
+    /* Nav */
+    .nav {
+      position:fixed; top:0; left:0; right:0; z-index:100; height:58px;
+      background:rgba(245,247,251,0.80);
+      backdrop-filter:blur(32px) saturate(200%); -webkit-backdrop-filter:blur(32px) saturate(200%);
+      border-bottom:1px solid rgba(255,255,255,0.6);
+      box-shadow:0 1px 0 rgba(0,0,0,0.05),0 4px 24px rgba(0,0,0,0.04);
+    }
+    .nav-inner { max-width:1140px; margin:0 auto; padding:0 1.5rem; height:100%; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+    .logo { display:flex; align-items:center; gap:9px; text-decoration:none; color:var(--dark); }
+    .logo-mark {
+      width:30px; height:30px; border-radius:50%;
+      background:linear-gradient(145deg,#3b82f6 0%,#0071e3 60%,#0058b0 100%);
+      position:relative; overflow:hidden;
+      box-shadow:0 4px 14px rgba(0,113,227,0.35),inset 0 1px 0 rgba(255,255,255,0.35);
+    }
+    .logo-mark::before { content:""; position:absolute; inset:3px; border-radius:50%; border:1.5px solid rgba(255,255,255,0.45); }
+    .logo-mark::after { content:""; position:absolute; bottom:0; left:3px; right:3px; height:38%; background:rgba(0,20,60,0.45); border-radius:50% 50% 0 0; }
+    .logo-text { font-size:1.05rem; font-weight:700; letter-spacing:-.025em; }
+    .nav-links { display:flex; align-items:center; gap:1.75rem; list-style:none; }
+    .nav-links a { font-size:.8rem; font-weight:500; color:#6e6e73; text-decoration:none; transition:color .2s; }
+    .nav-links a:hover { color:var(--dark); }
+    .nav-right { display:flex; align-items:center; gap:9px; }
+    .btn-ghost-sm {
+      font-size:.77rem; font-weight:600; color:#6e6e73; text-decoration:none;
+      padding:7px 13px; border-radius:9999px; border:1.5px solid rgba(0,0,0,0.10);
+      background:rgba(255,255,255,0.6); backdrop-filter:blur(10px); transition:all .2s;
+      display:inline-flex; align-items:center; gap:5px;
+    }
+    .btn-ghost-sm:hover { color:var(--dark); border-color:rgba(0,0,0,0.2); background:rgba(255,255,255,0.9); }
+    .btn-nav {
+      background:linear-gradient(135deg,#0071e3,#3b82f6); color:#fff; border:none;
+      padding:8px 20px; border-radius:9999px; font-size:.8rem; font-weight:700;
+      cursor:pointer; text-decoration:none;
+      box-shadow:0 4px 16px rgba(0,113,227,0.28); transition:all .25s;
+    }
+    .btn-nav:hover { transform:translateY(-1px); box-shadow:0 8px 24px rgba(0,113,227,0.38); }
+
+    /* Hero */
+    .hero { min-height:100vh; display:flex; align-items:center; padding:78px 1.5rem 60px; position:relative; overflow:hidden; }
+    .hero-bg {
+      position:absolute; inset:0; z-index:0;
       background:
-        radial-gradient(circle at 20% 0%, rgba(56,189,248,0.12), transparent 45%),
-        radial-gradient(circle at 80% 0%, rgba(59,130,246,0.18), transparent 55%),
-        radial-gradient(circle at 50% 80%, rgba(15,23,42,0.10), transparent 55%),
+        radial-gradient(ellipse 90% 70% at 75% 35%,rgba(59,130,246,0.13),transparent 60%),
+        radial-gradient(ellipse 60% 55% at 15% 65%,rgba(56,189,248,0.10),transparent 55%),
+        radial-gradient(ellipse 50% 50% at 85% 85%,rgba(99,102,241,0.07),transparent 60%),
         #f5f7fb;
-      color: var(--sf-dark);
-      -webkit-font-smoothing: antialiased;
-      position: relative;
-      overflow-x: hidden;
     }
-
-    body::after {
-      content: "";
-      pointer-events: none;
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='noStitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-      mix-blend-mode: soft-light;
-      z-index: -1;
+    .hero-inner { max-width:1140px; margin:0 auto; width:100%; display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; position:relative; z-index:1; }
+    .hero-badge {
+      display:inline-flex; align-items:center; gap:7px;
+      padding:5px 14px; border-radius:9999px; margin-bottom:1.5rem;
+      font-size:.7rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#0071e3;
+      background:rgba(0,113,227,0.08); backdrop-filter:blur(12px);
+      border:1px solid rgba(0,113,227,0.18); box-shadow:inset 0 1px 0 rgba(255,255,255,0.7);
     }
-
-    .apple-glass {
-      background: rgba(255, 255, 255, 0.82);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+    .badge-dot { width:7px; height:7px; border-radius:50%; background:#0071e3; box-shadow:0 0 0 3px rgba(0,113,227,0.2); animation:blink 2s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{opacity:1;box-shadow:0 0 0 3px rgba(0,113,227,0.2)} 50%{opacity:.4;box-shadow:0 0 0 5px rgba(0,113,227,0.08)} }
+    .hero-title { font-size:clamp(2.1rem,3.8vw,3.4rem); font-weight:800; line-height:1.08; letter-spacing:-.04em; margin-bottom:1.25rem; }
+    .hero-title .grad { background:linear-gradient(135deg,#0071e3 0%,#3b82f6 50%,#60a5fa 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .hero-body { font-size:1rem; line-height:1.72; color:#6e6e73; margin-bottom:2rem; max-width:460px; }
+    .hero-body strong { color:var(--dark); font-weight:600; }
+    .hero-cta { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; margin-bottom:2.5rem; }
+    .btn-primary {
+      background:linear-gradient(135deg,#0071e3,#3b82f6); color:#fff;
+      padding:14px 30px; border-radius:9999px; font-weight:700; font-size:.92rem;
+      text-decoration:none; box-shadow:0 12px 32px rgba(0,113,227,0.28);
+      transition:all .3s; display:inline-flex; align-items:center; gap:8px; border:none; cursor:pointer;
     }
-
-    .btn-apple {
-      background: linear-gradient(135deg, #0071e3, #3b82f6);
-      color: #fff;
-      transition: all 0.3s ease;
-      box-shadow: 0 10px 30px rgba(0, 113, 227, 0.22);
+    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 20px 40px rgba(0,113,227,0.38); }
+    .btn-secondary {
+      color:var(--dark); font-size:.88rem; font-weight:600; text-decoration:none;
+      display:inline-flex; align-items:center; gap:6px; padding:14px 20px; border-radius:9999px;
+      background:rgba(255,255,255,0.7); border:1.5px solid rgba(0,0,0,0.09);
+      backdrop-filter:blur(10px); transition:all .2s;
     }
+    .btn-secondary:hover { background:rgba(255,255,255,0.95); border-color:rgba(0,0,0,0.18); }
+    .hero-checks { display:flex; flex-wrap:wrap; gap:1rem; }
+    .check-item { display:flex; align-items:center; gap:7px; font-size:.8rem; color:#6e6e73; font-weight:500; }
+    .check-dot { width:20px; height:20px; border-radius:50%; background:#dcfce7; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
 
-    .btn-apple:hover:not(:disabled) {
-      transform: translateY(-1px) scale(1.02);
-      box-shadow: 0 18px 40px rgba(37, 99, 235, 0.3);
+    /* Card stack */
+    .hero-visual { display:flex; justify-content:center; align-items:center; }
+    .card-stack { position:relative; width:360px; height:420px; }
+    .card-float {
+      position:absolute;
+      background:rgba(255,255,255,0.88); backdrop-filter:blur(40px) saturate(200%); -webkit-backdrop-filter:blur(40px) saturate(200%);
+      border:1px solid rgba(255,255,255,0.75); border-radius:1.5rem; padding:22px 26px;
+      box-shadow:0 24px 64px rgba(0,0,0,0.09),inset 0 1px 0 rgba(255,255,255,1);
     }
-
-    .btn-apple:disabled {
-      background: #d1d1d6;
-      cursor: not-allowed;
-      box-shadow: none;
+    .card-main { width:310px; top:50%; left:50%; transform:translate(-50%,-50%); z-index:3; }
+    .card-back1 { width:278px; top:calc(50% - 28px); left:calc(50% + 22px); transform:translateY(-50%) rotate(4deg); z-index:1; opacity:.55; }
+    .card-back2 { width:268px; top:calc(50% + 22px); left:calc(50% - 28px); transform:translateY(-50%) rotate(-3deg); z-index:2; opacity:.72; }
+    .card-label { font-size:.64rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#9ca3af; margin-bottom:4px; }
+    .card-price { font-size:1.7rem; font-weight:800; letter-spacing:-.04em; color:var(--dark); line-height:1; }
+    .card-price .unit { font-size:.82rem; font-weight:500; color:#9ca3af; margin-left:3px; }
+    .card-desc { font-size:.75rem; color:#9ca3af; margin-top:5px; }
+    .card-divider { height:1px; background:#f3f4f6; margin:14px 0; }
+    .badge-pill { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:9999px; font-size:.7rem; font-weight:700; }
+    .pill-green { background:#dcfce7; color:#166534; }
+    .pill-blue { background:#dbeafe; color:#1e40af; }
+    .progress-track { height:6px; background:#f3f4f6; border-radius:9999px; margin-top:10px; overflow:hidden; }
+    .progress-fill { height:100%; border-radius:9999px; background:linear-gradient(90deg,#0071e3,#3b82f6); animation:prog 3s ease-in-out infinite alternate; }
+    @keyframes prog { from{width:38%} to{width:82%} }
+    .float-badge {
+      position:absolute;
+      background:rgba(255,255,255,0.92); backdrop-filter:blur(24px) saturate(180%); -webkit-backdrop-filter:blur(24px) saturate(180%);
+      border:1px solid rgba(255,255,255,0.8); border-radius:1rem; padding:10px 16px;
+      box-shadow:0 8px 28px rgba(0,0,0,0.09),inset 0 1px 0 rgba(255,255,255,1);
+      display:flex; align-items:center; gap:9px; font-size:.78rem; font-weight:600; white-space:nowrap;
     }
+    .fb-top { top:18px; right:-8px; animation:fy 4s ease-in-out infinite; }
+    .fb-bottom { bottom:38px; left:-16px; animation:fy 4s ease-in-out infinite; animation-delay:1.5s; }
+    @keyframes fy { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
 
+    /* Stats */
+    .stats-bar { background:rgba(255,255,255,0.88); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border-top:1px solid rgba(255,255,255,0.7); border-bottom:1px solid rgba(0,0,0,0.05); padding:2.5rem 1.5rem; }
+    .stats-inner { max-width:1140px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:2rem; text-align:center; }
+    .stat-num { font-size:2.4rem; font-weight:800; letter-spacing:-.05em; background:linear-gradient(135deg,#0071e3,#3b82f6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .stat-label { font-size:.8rem; color:#6e6e73; margin-top:4px; font-weight:500; }
+
+    /* Section base */
+    .section { padding:96px 1.5rem; }
+    .section-inner { max-width:1140px; margin:0 auto; }
+    .section-label { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:#0071e3; margin-bottom:10px; }
+    .section-title { font-size:clamp(1.7rem,2.8vw,2.5rem); font-weight:800; letter-spacing:-.035em; line-height:1.1; color:var(--dark); margin-bottom:.9rem; }
+    .section-sub { font-size:.95rem; color:#6e6e73; line-height:1.7; max-width:520px; }
+
+    /* Steps */
+    .steps-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.25rem; margin-top:3.5rem; }
     .step-card {
-      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius:1.5rem; padding:28px 24px;
+      background:rgba(255,255,255,0.9); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+      border:1px solid rgba(255,255,255,0.7);
+      box-shadow:0 4px 24px rgba(0,0,0,0.05),inset 0 1px 0 rgba(255,255,255,1);
+      transition:all .3s;
     }
+    .step-card:hover { transform:translateY(-5px); box-shadow:0 18px 44px rgba(0,0,0,0.09); }
+    .step-num { width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg,#0071e3,#3b82f6); color:#fff; font-weight:800; font-size:.95rem; display:flex; align-items:center; justify-content:center; margin-bottom:14px; box-shadow:0 6px 16px rgba(0,113,227,0.28); }
+    .step-icon { color:#0071e3; margin-bottom:10px; }
+    .step-title { font-size:.95rem; font-weight:700; margin-bottom:8px; }
+    .step-desc { font-size:.8rem; color:#6e6e73; line-height:1.65; }
 
-    .step-hidden {
-      display: none;
-      opacity: 0;
-      transform: translateY(20px);
+    /* Reasons */
+    .reasons-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-top:3.5rem; }
+    .reason-card {
+      border-radius:1.5rem; padding:30px 26px;
+      background:rgba(255,255,255,0.88); backdrop-filter:blur(24px) saturate(180%); -webkit-backdrop-filter:blur(24px) saturate(180%);
+      border:1px solid rgba(255,255,255,0.7);
+      box-shadow:0 4px 24px rgba(0,0,0,0.05),inset 0 1px 0 rgba(255,255,255,1);
+      transition:all .3s; display:flex; gap:1.25rem; align-items:flex-start;
     }
-
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 44px;
-      height: 24px;
+    .reason-card:hover { transform:translateY(-3px); box-shadow:0 14px 36px rgba(0,0,0,0.08); }
+    .reason-icon {
+      width:44px; height:44px; border-radius:12px; flex-shrink:0; color:#0071e3;
+      background:linear-gradient(135deg,rgba(0,113,227,0.10),rgba(59,130,246,0.06));
+      border:1px solid rgba(0,113,227,0.15); display:flex; align-items:center; justify-content:center;
     }
+    .reason-title { font-size:.95rem; font-weight:700; margin-bottom:6px; }
+    .reason-desc { font-size:.82rem; color:#6e6e73; line-height:1.65; }
 
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
+    /* Pricing */
+    .pricing-section { background:var(--dark); padding:96px 1.5rem; }
+    .pricing-section .section-title { color:#fff; }
+    .pricing-section .section-label { color:#60a5fa; }
+    .pricing-section .section-sub { color:rgba(255,255,255,0.5); }
+    .pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; margin-top:3.5rem; }
+    .price-card {
+      border-radius:1.5rem; padding:32px 28px; position:relative; overflow:hidden;
+      background:rgba(255,255,255,0.05); backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%);
+      border:1px solid rgba(255,255,255,0.08); transition:all .3s;
     }
+    .price-card:hover { background:rgba(255,255,255,0.08); transform:translateY(-4px); }
+    .price-card.featured { background:rgba(0,113,227,0.18); border-color:rgba(59,130,246,0.35); box-shadow:0 0 0 1px rgba(59,130,246,0.2),0 20px 50px rgba(0,113,227,0.2); }
+    .price-best { position:absolute; top:16px; right:16px; background:linear-gradient(135deg,#0071e3,#3b82f6); color:#fff; font-size:.62rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:4px 10px; border-radius:9999px; }
+    .price-freq { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:rgba(255,255,255,0.38); margin-bottom:12px; }
+    .price-amount { font-size:2.8rem; font-weight:800; letter-spacing:-.04em; color:#fff; line-height:1; margin-bottom:4px; }
+    .price-amount .cur { font-size:1.1rem; font-weight:600; vertical-align:top; margin-top:9px; display:inline-block; }
+    .price-note { font-size:.76rem; color:rgba(255,255,255,0.38); margin-bottom:24px; }
+    .price-features { list-style:none; margin-bottom:28px; }
+    .price-features li { font-size:.82rem; color:rgba(255,255,255,0.68); padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; align-items:center; gap:9px; }
+    .price-features li svg { color:#60a5fa; flex-shrink:0; }
+    .btn-price { width:100%; padding:13px; border-radius:9999px; font-weight:700; font-size:.88rem; text-decoration:none; display:block; text-align:center; transition:all .25s; border:none; cursor:pointer; }
+    .btn-outline { background:transparent; border:1.5px solid rgba(255,255,255,0.18); color:#fff; }
+    .btn-outline:hover { background:rgba(255,255,255,0.08); }
+    .btn-filled { background:linear-gradient(135deg,#0071e3,#3b82f6); color:#fff; box-shadow:0 8px 24px rgba(0,113,227,0.35); }
+    .btn-filled:hover { transform:translateY(-1px); box-shadow:0 14px 32px rgba(0,113,227,0.45); }
 
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #d1d1d6;
-      transition: .4s;
-      border-radius: 34px;
+    /* Calculator */
+    .calc-section { background:#fff; padding:80px 1.5rem; }
+    .calc-card { max-width:720px; margin:3rem auto 0; background:var(--light); border-radius:2rem; padding:40px; border:1px solid rgba(0,0,0,0.05); box-shadow:0 4px 24px rgba(0,0,0,0.04); }
+    .calc-row { margin-bottom:26px; }
+    .calc-label { font-size:.78rem; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; }
+    .calc-opts { display:flex; gap:8px; flex-wrap:wrap; }
+    .calc-opt { padding:9px 20px; border-radius:9999px; border:1.5px solid #e5e7eb; background:#fff; font-size:.84rem; font-weight:600; cursor:pointer; transition:all .2s; color:#6e6e73; }
+    .calc-opt:hover { border-color:#93c5fd; color:var(--dark); }
+    .calc-opt.active { border-color:#0071e3; background:#eff6ff; color:#0071e3; box-shadow:0 0 0 3px rgba(0,113,227,0.08); }
+    .calc-result { background:linear-gradient(135deg,#0071e3,#3b82f6); border-radius:1.5rem; padding:28px 32px; display:flex; align-items:center; justify-content:space-between; gap:1.5rem; box-shadow:0 12px 40px rgba(0,113,227,0.28); }
+    .calc-price { font-size:2.4rem; font-weight:800; color:#fff; letter-spacing:-.04em; }
+    .calc-note { font-size:.72rem; color:rgba(255,255,255,0.6); margin-top:3px; }
+    .calc-label-sm { font-size:.78rem; color:rgba(255,255,255,0.65); }
+
+    /* For who */
+    .who-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; margin-top:3.5rem; }
+    .who-card {
+      border-radius:1.5rem; padding:32px 28px;
+      background:rgba(255,255,255,0.9); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+      border:1px solid rgba(255,255,255,0.7);
+      box-shadow:0 4px 24px rgba(0,0,0,0.05),inset 0 1px 0 rgba(255,255,255,1);
+      transition:all .3s;
     }
+    .who-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,0.08); }
+    .who-icon { width:44px; height:44px; border-radius:12px; margin-bottom:16px; display:flex; align-items:center; justify-content:center; color:#0071e3; background:linear-gradient(135deg,rgba(0,113,227,0.10),rgba(59,130,246,0.06)); border:1px solid rgba(0,113,227,0.12); }
+    .who-title { font-size:1rem; font-weight:700; margin-bottom:8px; }
+    .who-desc { font-size:.82rem; color:#6e6e73; line-height:1.68; }
 
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background-color: #fff;
-      transition: .4s;
-      border-radius: 50%;
+    /* FAQ */
+    .faq-section { padding:96px 1.5rem; background:#fff; }
+    .faq-list { max-width:720px; margin:3.5rem auto 0; }
+    .faq-item { border-bottom:1px solid #f3f4f6; }
+    .faq-q { width:100%; background:none; border:none; text-align:left; padding:20px 0; font-size:.95rem; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; align-items:center; color:var(--dark); font-family:'Inter',sans-serif; gap:1rem; }
+    .faq-icon { width:26px; height:26px; border-radius:50%; flex-shrink:0; background:#f3f4f6; display:flex; align-items:center; justify-content:center; transition:all .3s; color:#6e6e73; }
+    .faq-item.open .faq-icon { background:#0071e3; color:#fff; transform:rotate(45deg); }
+    .faq-a { font-size:.88rem; color:#6e6e73; line-height:1.75; max-height:0; overflow:hidden; transition:max-height .4s ease,padding .3s; }
+    .faq-item.open .faq-a { max-height:300px; padding-bottom:20px; }
+
+    /* CTA */
+    .cta-section { padding:96px 1.5rem; }
+    .cta-card {
+      max-width:740px; margin:0 auto; border-radius:2.5rem; padding:64px 52px;
+      position:relative; overflow:hidden; text-align:center;
+      background:rgba(29,29,31,0.94);
+      backdrop-filter:blur(40px) saturate(180%); -webkit-backdrop-filter:blur(40px) saturate(180%);
+      border:1px solid rgba(255,255,255,0.08);
+      box-shadow:0 32px 80px rgba(0,0,0,0.22),inset 0 1px 0 rgba(255,255,255,0.05);
     }
+    .cta-card::before { content:""; position:absolute; top:-80px; right:-80px; width:340px; height:340px; border-radius:50%; background:radial-gradient(circle,rgba(59,130,246,0.18),transparent 70%); pointer-events:none; }
+    .cta-card::after { content:""; position:absolute; bottom:-80px; left:-60px; width:280px; height:280px; border-radius:50%; background:radial-gradient(circle,rgba(0,113,227,0.14),transparent 70%); pointer-events:none; }
+    .cta-title { font-size:clamp(1.8rem,3vw,2.4rem); font-weight:800; letter-spacing:-.035em; color:#fff; margin-bottom:1rem; position:relative; z-index:1; }
+    .cta-sub { font-size:.92rem; color:rgba(255,255,255,0.5); line-height:1.7; margin-bottom:2.5rem; position:relative; z-index:1; }
+    .cta-actions { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; position:relative; z-index:1; }
+    .btn-white { background:#fff; color:var(--dark); padding:14px 32px; border-radius:9999px; font-weight:700; font-size:.92rem; text-decoration:none; transition:all .25s; display:inline-block; box-shadow:0 4px 20px rgba(0,0,0,0.12); }
+    .btn-white:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(0,0,0,0.2); }
+    .btn-ghost-cta { color:rgba(255,255,255,0.65); padding:14px 22px; border-radius:9999px; font-weight:600; font-size:.88rem; text-decoration:none; border:1.5px solid rgba(255,255,255,0.14); transition:all .25s; display:inline-flex; align-items:center; gap:7px; }
+    .btn-ghost-cta:hover { border-color:rgba(255,255,255,0.32); color:#fff; }
 
-    input:checked + .slider {
-      background-color: var(--sf-blue);
-    }
+    /* Footer */
+    .footer { background:rgba(255,255,255,0.95); backdrop-filter:blur(20px); border-top:1px solid rgba(0,0,0,0.06); padding:52px 1.5rem 32px; }
+    .footer-inner { max-width:1140px; margin:0 auto; }
+    .footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:3rem; margin-bottom:3rem; }
+    .footer-brand p { font-size:.82rem; color:#9ca3af; line-height:1.7; margin-top:10px; max-width:260px; }
+    .footer-col h4 { font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#9ca3af; margin-bottom:14px; }
+    .footer-col ul { list-style:none; }
+    .footer-col ul li { margin-bottom:9px; }
+    .footer-col ul li a { font-size:.82rem; color:#6e6e73; text-decoration:none; transition:color .2s; }
+    .footer-col ul li a:hover { color:var(--dark); }
+    .footer-bottom { padding-top:1.5rem; border-top:1px solid #f3f4f6; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .footer-bottom p { font-size:.75rem; color:#d1d5db; }
 
-    input:checked + .slider:before {
-      transform: translateX(20px);
-    }
+    /* Reveal */
+    .reveal { opacity:0; transform:translateY(26px); transition:opacity .7s cubic-bezier(.22,.61,.36,1),transform .7s cubic-bezier(.22,.61,.36,1); }
+    .reveal.visible { opacity:1; transform:translateY(0); }
 
-    .sf-card {
-      border-radius: 2rem;
-      background: #fff;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.06);
-      border: 1px solid rgba(0, 0, 0, 0.04);
-    }
-
-    .phone-shell {
-      border-radius: 2rem;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      background: radial-gradient(circle at top, #f9fafb, #e5e7eb);
-      box-shadow: 0 22px 45px rgba(15, 23, 42, 0.18);
-      animation: floatPulse 6s ease-in-out infinite;
-    }
-
-    .phone-notch {
-      width: 42%;
-      height: 16px;
-      border-radius: 9999px;
-      background: rgba(15, 23, 42, 0.95);
-    }
-
-    .phone-pill {
-      border-radius: 9999px;
-      background: rgba(15, 23, 42, 0.95);
-    }
-
-    @keyframes floatPulse {
-      0%, 100% { transform: translateY(0); box-shadow: 0 8px 25px rgba(59,130,246,.14); }
-      50% { transform: translateY(-4px); box-shadow: 0 18px 35px rgba(59,130,246,.22); }
-    }
-
-    .sg-icon {
-      width: 20px;
-      height: 20px;
-      stroke: currentColor;
-      stroke-width: 1.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      fill: none;
-    }
-
-    .sticky-cta {
-      display: none;
-    }
-
-    @media (max-width: 767px) {
-      .sticky-cta {
-        display: flex;
-      }
-    }
-
-   .hero-parallax {
-  position: relative;
-  overflow: hidden;
-}
-
-.hero-parallax::before {
-  content: none;
-}
-
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity .7s cubic-bezier(0.22, 0.61, 0.36, 1), transform .7s cubic-bezier(0.22, 0.61, 0.36, 1);
-    }
-
-    .reveal-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .progress-animated {
-      transform-origin: left center;
-      transform: scaleX(0.3);
-      transition: transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
-    }
-
-    .progress-animated.ready {
-      transform: scaleX(1);
-    }
-
-    .btn-apple-glow {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn-apple-glow::after {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.35), transparent 55%);
-      opacity: 0;
-      transform: translate3d(-30%, -30%, 0);
-      transition: opacity .4s ease-out, transform .4s ease-out;
-      pointer-events: none;
-    }
-
-    .btn-apple-glow:hover::after {
-      opacity: 1;
-      transform: translate3d(-5%, -5%, 0);
+    @media (max-width:900px) {
+      .hero-inner { grid-template-columns:1fr; }
+      .hero-visual { display:none; }
+      .steps-grid { grid-template-columns:1fr 1fr; }
+      .pricing-grid { grid-template-columns:1fr; }
+      .who-grid { grid-template-columns:1fr; }
+      .reasons-grid { grid-template-columns:1fr; }
+      .stats-inner { grid-template-columns:repeat(2,1fr); }
+      .nav-links { display:none; }
+      .footer-grid { grid-template-columns:1fr 1fr; }
+      .calc-result { flex-direction:column; text-align:center; }
     }
   </style>
 </head>
-<body class="antialiased">
+<body>
 
-  <!-- JSON-LD strukturovaná data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": ["LocalBusiness", "Service"],
-    "name": "SepticGo",
-    "description": "Chytrý vývoz jímky pro domy, chaty a menší objekty bez kanalizace. Pravidelný plán vývozů, orientační cena dopředu a ověření partneři v regionu.",
-    "url": "https://www.septicgo.com/",
-    "telephone": "+420 705 908 970",
-    "email": "go@septicgo.com",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Revoluční 1",
-      "addressLocality": "Praha 1",
-      "postalCode": "11000",
-      "addressCountry": "CZ"
-    },
-    "areaServed": [
-      {"@type": "AdministrativeArea", "name": "Praha"},
-      {"@type": "AdministrativeArea", "name": "Středočeský kraj"}
-    ],
-    "sameAs": [],
-    "serviceType": "Vývoz jímek",
-    "priceRange": "2000-4000 CZK"
-  }
-  </script>
-
-  <!-- NAV -->
-  <nav class="sticky top-0 z-50 apple-glass border-b border-gray-200/70">
-    <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-      <div class="flex items-center space-x-2">
-        <div class="w-7 h-7 rounded-full bg-blue-500/90 relative overflow-hidden flex items-center justify-center">
-          <div class="absolute inset-1 rounded-full border-2 border-white/60"></div>
-          <div class="absolute bottom-0 inset-x-1 h-[40%] bg-blue-900/70 rounded-b-full"></div>
-        </div>
-        <span class="text-base md:text-lg font-semibold tracking-tight">SepticGo</span>
-      </div>
-      <div class="hidden md:flex items-center space-x-8 text-xs font-medium">
-        <a href="#jak-funguje" class="text-gray-500 hover:text-black transition">Jak to funguje</a>
-        <a href="#pro-koho" class="text-gray-500 hover:text-black transition">Pro koho</a>
-        <a href="#regiony" class="text-gray-500 hover:text-black transition">Regiony</a>
-        <a href="#faq" class="text-gray-500 hover:text-black transition">FAQ</a>
-        <a href="#rezervace" class="text-blue-600 hover:text-blue-700">Spočítat cenu</a>
-      </div>
-      <div class="hidden md:flex items-center space-x-4 text-[11px] text-gray-500">
-        <span class="font-medium text-gray-700">+420 705 908 970</span>
-        <a href="mailto:go@septicgo.com" class="hover:text-blue-600 transition">go@septicgo.com</a>
-      </div>
-    </div>
-  </nav>
-
-  <!-- TRUST BAR -->
-  <div class="border-b border-gray-200 bg-white/70 backdrop-blur">
-    <div class="max-w-6xl mx-auto px-6 py-2 flex flex-wrap gap-x-6 gap-y-1 text-[11px] text-gray-600">
-      <span class="inline-flex items-center gap-1.5">
-        <svg class="sg-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="3.5" y="9.5" width="17" height="9" rx="2" />
-          <path d="M5.5 13c1.2 1 2.3 1 3.5 0s2.3-1 3.5 0 2.3 1 3.5 0 2.3-1 3.5 0" />
-          <rect x="9.5" y="6.5" width="5" height="2" rx="0.8" />
-        </svg>
-        <span>Ověření partneři vývozu</span>
-      </span>
-      <span class="inline-flex items-center gap-1.5">
-        <svg class="sg-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 3.5L7 5.5v5.7c0 3.1 1.9 5.9 5 7.3 3.1-1.4 5-4.2 5-7.3V5.5L12 3.5z" />
-          <path d="M9.5 11.5l1.7 1.7 3.3-3.4" />
-        </svg>
-        <span>Transparentní cena předem</span>
-      </span>
-      <span class="inline-flex items-center gap-1.5">
-        <svg class="sg-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M5 18c0-2.2 1.8-4 4-4h2c1.7 0 3-1.3 3-3s-1.3-3-3-3h-1.5C7.1 8 6 6.9 6 5.5 6 4.1 7.1 3 8.5 3H10" />
-          <path d="M14 8h3.2c.5 0 .8.4.8.9V11" />
-          <rect x="16.5" y="11" width="3" height="3.5" rx="0.8" />
-        </svg>
-        <span>Možnost vývozu bez přítomnosti</span>
-      </span>
-      <span class="inline-flex items-center gap-1.5">
-        <svg class="sg-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="4" y="5" width="16" height="15" rx="2" />
-          <path d="M4 9h16" />
-          <path d="M9 3v4" />
-          <path d="M15 3v4" />
-          <rect x="7" y="11.5" width="2.5" height="2.5" rx="0.6" />
-          <rect x="11" y="11.5" width="2.5" height="2.5" rx="0.6" />
-          <rect x="15" y="11.5" width="2.5" height="2.5" rx="0.6" />
-        </svg>
-        <span>Faktura a historie online</span>
-      </span>
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo">
+      <div class="logo-mark"></div>
+      <span class="logo-text">SepticGo</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#jak-to-funguje">Jak to funguje</a></li>
+      <li><a href="#cenik">Ceník</a></li>
+      <li><a href="#pro-koho">Pro koho</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="/dashboard" class="btn-ghost-sm">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+        Přihlásit se
+      </a>
+      <a href="/partner" class="btn-ghost-sm">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg>
+        Pro partnery
+      </a>
+      <a href="/booking" class="btn-nav">Objednat vývoz →</a>
     </div>
   </div>
+</nav>
 
-  <!-- HERO -->
-  <header class="max-w-6xl mx-auto px-6 pt-12 pb-16 md:pb-20 hero-parallax">
-    <div class="grid md:grid-cols-2 gap-12 items-center">
-      <div class="reveal">
-        <p class="uppercase tracking-[0.28em] text-[10px] text-gray-500 font-semibold mb-4">
-          CHYTRÝ VÝVOZ JÍMEK
-        </p>
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight mb-4 leading-tight text-gray-900">
-          Vývoz jímky bez hlídání termínů.
-        </h1>
-        <p class="text-base md:text-lg text-gray-600 max-w-md mb-4">
-          SepticGo naplánuje pravidelný vývoz za vás — s přehledem ceny, připomínkami a ověřenými partnery v regionu.
-        </p>
-        <p class="text-sm md:text-base text-gray-600 max-w-md mb-6">
-          Pro domy, chaty i menší objekty bez kanalizace. Nastavíte jednou, my pak hlídáme termíny, komunikaci i výjezdy.
-        </p>
-
-        <form
-          class="sf-card p-4 md:p-5 max-w-xl"
-          onsubmit="event.preventDefault(); window.location.href = buildWaitlistMailto();"
-        >
-          <div class="grid sm:grid-cols-[1fr_auto] gap-3">
-            <input
-              id="waitlist-email"
-              type="email"
-              placeholder="Váš e‑mail pro spuštění v regionu"
-              class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-              required
-            >
-            <button type="submit" class="btn-apple btn-apple-glow px-6 py-3 rounded-2xl text-sm font-semibold whitespace-nowrap">
-              Chci hlídat dostupnost
-            </button>
-          </div>
-          <p class="mt-3 text-[11px] text-gray-500">
-            Zatím nic neplatíte. Po spuštění ve vašem regionu vám pošleme dostupnost, orientační cenu a další krok.
-          </p>
-        </form>
-
-        <div class="flex flex-wrap gap-3 text-[11px] text-gray-500 mt-4">
-          <span class="inline-flex items-center gap-1.5">
-            <svg class="sg-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="3.5" y="9.5" width="17" height="9" rx="2" />
-              <path d="M5.5 13c1.2 1 2.3 1 3.5 0s2.3-1 3.5 0 2.3 1 3.5 0 2.3-1 3.5 0" />
-              <rect x="9.5" y="6.5" width="5" height="2" rx="0.8" />
-            </svg>
-            <span>Ověření partneři vývozu</span>
-          </span>
-          <span class="inline-flex items-center gap-1.5">
-            <svg class="sg-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 3.5L7 5.5v5.7c0 3.1 1.9 5.9 5 7.3 3.1-1.4 5-4.2 5-7.3V5.5L12 3.5z" />
-              <path d="M9.5 11.5l1.7 1.7 3.3-3.4" />
-            </svg>
-            <span>Bezpečná platba po spuštění služby</span>
-          </span>
-        </div>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Aktivní v Praze a Středočeském kraji
       </div>
-
-      <div id="app" class="flex justify-center reveal">
-        <div class="flex gap-5">
-          <div class="phone-shell w-[260px] p-4 bg-gradient-to-b from-slate-100 to-slate-300">
-            <div class="flex justify-center mb-4">
-              <div class="phone-notch"></div>
-            </div>
-            <div class="bg-white rounded-[1.5rem] p-4 h-[420px] flex flex-col">
-              <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center space-x-2">
-                  <div class="phone-pill w-9 h-5 flex items-center justify-center text-[8px] text-white font-semibold">
-                    SG
-                  </div>
-                  <span class="text-[11px] font-medium text-gray-800">SepticGo</span>
-                </div>
-                <span class="text-[10px] text-gray-400">Přehled jímky</span>
-              </div>
-              <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 mb-3">
-                <div class="flex items-baseline justify-between mb-1">
-                  <span class="text-[10px] uppercase tracking-[0.22em] text-gray-400">DALŠÍ VÝVOZ</span>
-                  <span class="text-[10px] text-blue-600 font-medium">Roční plán</span>
-                </div>
-                <div class="flex items-end justify-between">
-                  <div>
-                    <div class="text-lg font-semibold text-gray-900">12. 4. 2026</div>
-                    <div class="text-[11px] text-gray-500">Út, 8:00–12:00</div>
-                  </div>
-                  <div class="text-right">
-                    <div class="text-xs text-gray-500">Předpokládaná cena</div>
-                    <div class="text-sm font-semibold text-blue-600">2 500 Kč</div>
-                  </div>
-                </div>
-              </div>
-              <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 mb-3">
-                <div class="flex justify-between items-center mb-2">
-                  <span class="text-[10px] uppercase tracking-[0.16em] text-gray-400">OBSAZENÍ JÍMKY</span>
-                  <span class="text-[10px] text-gray-500">5 m³</span>
-                </div>
-                <div class="h-2.5 rounded-full bg-slate-200 overflow-hidden">
-                  <div class="h-full w-2/3 bg-gradient-to-r from-blue-500 to-blue-400 rounded-full progress-animated" id="hero-progress"></div>
-                </div>
-                <div class="flex justify-between mt-1.5">
-                  <span class="text-[10px] text-gray-500">Odhad 68 % naplnění</span>
-                  <span class="text-[10px] text-blue-600 font-medium">Bezpečný stav</span>
-                </div>
-              </div>
-              <div class="mt-auto pt-2">
-                <button class="w-full bg-blue-600 text-white rounded-full py-2 text-[11px] font-semibold">
-                  Upravit plán vývozu
-                </button>
-                <p class="mt-2 text-[9px] text-gray-400 text-center">
-                  Historie vývozů, faktury a upozornění na jednom místě.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="phone-shell w-[260px] p-4 bg-gradient-to-b from-slate-100 to-slate-300 hidden md:block">
-            <div class="flex justify-center mb-4">
-              <div class="phone-notch"></div>
-            </div>
-            <div class="bg-white rounded-[1.5rem] p-4 h-[420px] flex flex-col">
-              <div class="flex items-center justify-between mb-3">
-                <span class="text-[11px] font-medium text-gray-800">Jak probíhá vývoz</span>
-                <span class="text-[10px] text-gray-400">Nastavení → Výjezd</span>
-              </div>
-              <div class="space-y-4 text-[11px] text-gray-700">
-                <div class="flex items-start gap-3">
-                  <div class="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center text-[10px] text-blue-700 font-semibold">1</div>
-                  <div>
-                    <div class="font-semibold text-gray-900">Nastavení</div>
-                    <div>Zadáte adresu, velikost jímky a preferovanou frekvenci.</div>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3">
-                  <div class="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center text-[10px] text-blue-700 font-semibold">2</div>
-                  <div>
-                    <div class="font-semibold text-gray-900">Potvrzení</div>
-                    <div>Ověříme dostupnost partnera a pošleme navržené termíny.</div>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3">
-                  <div class="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center text-[10px] text-blue-700 font-semibold">3</div>
-                  <div>
-                    <div class="font-semibold text-gray-900">Výjezd</div>
-                    <div>Partner provede vývoz, i bez vaší fyzické přítomnosti.</div>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3">
-                  <div class="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center text-[10px] text-blue-700 font-semibold">4</div>
-                  <div>
-                    <div class="font-semibold text-gray-900">Historie</div>
-                    <div>V aplikaci vidíte faktury, termíny a plán dalších vývozů.</div>
-                  </div>
-                </div>
-              </div>
-              <div class="mt-auto pt-4">
-                <p class="text-[9px] text-gray-400 text-center">
-                  Celý proces máte přehledně v jedné aplikaci a e‑mailu.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </header>
-
-  <!-- Proč lidé odkládají / Jak to řeší SepticGo -->
-  <section class="max-w-6xl mx-auto px-6 pb-16">
-    <div class="grid md:grid-cols-2 gap-10 items-start">
-      <div class="reveal">
-        <div class="inline-flex items-center gap-2 mb-3 text-blue-600">
-          <svg class="sg-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="3.5" y="9.5" width="17" height="9" rx="2" />
-            <path d="M5.5 13c1.2 1 2.3 1 3.5 0s2.3-1 3.5 0 2.3 1 3.5 0 2.3-1 3.5 0" />
-            <rect x="9.5" y="6.5" width="5" height="2" rx="0.8" />
-          </svg>
-          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">BĚŽNÝ STAV</span>
-        </div>
-        <h2 class="text-2xl md:text-3xl font-semibold mb-3">Proč lidé odkládají vývoz jímky</h2>
-        <p class="text-sm md:text-base text-gray-600 mb-4">
-          Vývoz se často řeší až ve chvíli, kdy je jímka téměř plná. Obvolávání dopravců, nejasná cena a složité domlouvání termínů vede k odkládání.
-        </p>
-        <div class="grid gap-4">
-          <div class="sf-card p-4">
-            <h3 class="text-sm font-semibold mb-1">Pozdní řešení</h3>
-            <p class="text-xs text-gray-600">Na vývoz si vzpomenete až ve chvíli, kdy hrozí přeplnění a stres.</p>
-          </div>
-          <div class="sf-card p-4">
-            <h3 class="text-sm font-semibold mb-1">Nejasná cena</h3>
-            <p class="text-xs text-gray-600">Dopředu nevíte, kolik bude výjezd stát a co je v ceně zahrnuto.</p>
-          </div>
-          <div class="sf-card p-4">
-            <h3 class="text-sm font-semibold mb-1">Zbytečné telefonování</h3>
-            <p class="text-xs text-gray-600">Termíny, přístup a potvrzení se často řeší ručně a chaoticky.</p>
-          </div>
-        </div>
-      </div>
-      <div class="reveal">
-        <div class="inline-flex items-center gap-2 mb-3 text-blue-600">
-          <svg class="sg-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 3.5L7 5.5v5.7c0 3.1 1.9 5.9 5 7.3 3.1-1.4 5-4.2 5-7.3V5.5L12 3.5z" />
-            <path d="M9.5 11.5l1.7 1.7 3.3-3.4" />
-          </svg>
-          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">JAK TO ŘEŠÍME</span>
-        </div>
-        <h2 class="text-2xl md:text-3xl font-semibold mb-3">Jak to řeší SepticGo</h2>
-        <p class="text-sm md:text-base text-gray-600 mb-4">
-          SepticGo z vývozu dělá plánovanou službu. Jednou nastavíte parametry a my zařídíme monitoring, připomínky i koordinaci partnerů.
-        </p>
-        <ul class="text-sm text-gray-600 space-y-2">
-          <li>• Automaticky hlídáme termíny podle objemu a frekvence vývozu.</li>
-          <li>• Předem vidíte orientační cenu podle regionu a velikosti jímky.</li>
-          <li>• Ověření partneři v regionu, možnost vývozu i bez vaší přítomnosti.</li>
-          <li>• Přehled historie vývozů, faktur a nastavení v jedné aplikaci.</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- Jak funguje -->
-  <section id="jak-funguje" class="max-w-6xl mx-auto px-6 pb-16">
-    <div class="text-center mb-10 reveal">
-      <div class="inline-flex items-center gap-2 mb-2 text-blue-600">
-        <svg class="sg-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="4" y="5" width="16" height="15" rx="2" />
-          <path d="M4 9h16" />
-          <path d="M9 3v4" />
-          <path d="M15 3v4" />
-        </svg>
-        <span class="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">PLÁN VÝVOZŮ</span>
-      </div>
-      <h2 class="text-2xl md:text-3xl font-semibold mb-3">Jak SepticGo funguje</h2>
-      <p class="text-sm md:text-base text-gray-600 max-w-2xl mx-auto">
-        Jednou nastavíte parametry jímky a kontakt. My zařídíme plán vývozů, koordinaci partnerů a připomínky tak, aby jímka zůstala pod kontrolou.
+      <h1 class="hero-title">
+        Vývoz jímky.<br>
+        <span class="grad">Jednou nastavíte,</span><br>
+        zbytek hlídáme my.
+      </h1>
+      <p class="hero-body">
+        <strong>Žádné telefonování, žádné zapomenuté termíny.</strong> SepticGo propojí váš objekt s ověřeným partnerem ve vašem regionu. Zadáte adresu, velikost jímky a frekvenci — vše ostatní vyřídíme za vás. Cena je dopředu, platba online, faktura přijde e-mailem.
       </p>
-    </div>
-    <div class="grid md:grid-cols-4 gap-5">
-      <div class="sf-card p-5 reveal">
-        <p class="text-[11px] uppercase tracking-[0.22em] text-gray-400 font-semibold mb-3">KROK 1</p>
-        <h3 class="text-base font-semibold mb-2">Nastavíte jímku</h3>
-        <p class="text-sm text-gray-600">
-          Zvolíte velikost jímky, adresu a preferovanou frekvenci vývozu.
-        </p>
+      <div class="hero-cta">
+        <a href="/booking" class="btn-primary">
+          Spočítat cenu a objednat
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+        </a>
+        <a href="#jak-to-funguje" class="btn-secondary">
+          Jak to funguje
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+        </a>
       </div>
-      <div class="sf-card p-5 reveal">
-        <p class="text-[11px] uppercase tracking-[0.22em] text-gray-400 font-semibold mb-3">KROK 2</p>
-        <h3 class="text-base font-semibold mb-2">Ověříme region</h3>
-        <p class="text-sm text-gray-600">
-          Ověříme dostupnost partnerů ve vašem regionu a zašleme orientační cenu.
-        </p>
-      </div>
-      <div class="sf-card p-5 reveal">
-        <p class="text-[11px] uppercase tracking-[0.22em] text-gray-400 font-semibold mb-3">KROK 3</p>
-        <h3 class="text-base font-semibold mb-2">Naplánujeme výjezdy</h3>
-        <p class="text-sm text-gray-600">
-          Po spuštění v regionu naplánujeme termíny a odešleme připomínky.
-        </p>
-      </div>
-      <div class="sf-card p-5 reveal">
-        <p class="text-[11px] uppercase tracking-[0.22em] text-gray-400 font-semibold mb-3">KROK 4</p>
-        <h3 class="text-base font-semibold mb-2">Sledujete historii</h3>
-        <p class="text-sm text-gray-600">
-          V aplikaci máte přehled vývozů, faktur a budoucích termínů.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Pro koho -->
-  <section id="pro-koho" class="max-w-6xl mx-auto px-6 pb-16">
-    <div class="grid md:grid-cols-2 gap-10 items-start">
-      <div class="reveal">
-        <h2 class="text-2xl md:text-3xl font-semibold mb-4">Pro domy, chaty i menší objekty</h2>
-        <p class="text-sm md:text-base text-gray-600 mb-4">
-          SepticGo je ideální pro rodinné domy, rekreační objekty, menší bytové domy i objekty s omezeným přístupem. Přehledně vidíte plán vývozů a náklady během roku.
-        </p>
-        <ul class="text-sm text-gray-600 space-y-2 mb-6">
-          <li>• Majitelé rodinných domů a chalup.</li>
-          <li>• Správci menších bytových domů a kolivingu.</li>
-          <li>• Objekty s nepravidelným provozem nebo přístupem.</li>
-        </ul>
-        <h3 class="text-sm font-semibold mb-2">Časté situace</h3>
-        <ul class="text-sm text-gray-600 space-y-1">
-          <li>• Chata bez trvalého pobytu.</li>
-          <li>• Objekt s omezeným vjezdem techniky.</li>
-          <li>• Vývoz v nepřítomnosti majitele.</li>
-        </ul>
-      </div>
-      <div class="sf-card p-6 reveal">
-        <p class="text-[11px] uppercase tracking-[0.22em] text-gray-400 font-semibold mb-3">PROČ SEPTICGO</p>
-        <ul class="text-sm text-gray-600 space-y-2">
-          <li><span class="font-medium text-gray-800">Automatické plánování:</span> už neřešíte, kdy volat fekální vůz.</li>
-          <li><span class="font-medium text-gray-800">Ověření partneři:</span> spolupracujeme jen s prověřenými dopravci v regionu.</li>
-          <li><span class="font-medium text-gray-800">Transparentní cena:</span> orientační cena dopředu, vč. DPH.</li>
-          <li><span class="font-medium text-gray-800">Bezpečný vývoz:</span> možnost vývozu i bez vaší fyzické přítomnosti.</li>
-          <li><span class="font-medium text-gray-800">Podpora na e‑mailu:</span> odpovídáme do 1 pracovního dne.</li>
-        </ul>
-        <div class="mt-5">
-          <a href="#rezervace" class="inline-flex items-center text-xs font-semibold text-blue-600 hover:text-blue-700">
-            Spočítat orientační cenu →
-          </a>
+      <div class="hero-checks">
+        <div class="check-item">
+          <div class="check-dot"><svg width="10" height="10" fill="none" stroke="#166534" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg></div>
+          Cena dopředu, bez překvapení
+        </div>
+        <div class="check-item">
+          <div class="check-dot"><svg width="10" height="10" fill="none" stroke="#166534" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg></div>
+          Výjezd bez vaší přítomnosti
+        </div>
+        <div class="check-item">
+          <div class="check-dot"><svg width="10" height="10" fill="none" stroke="#166534" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg></div>
+          Faktura e-mailem ihned po výjezdu
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- Regiony -->
-  <section id="regiony" class="max-w-6xl mx-auto px-6 pb-16">
-    <div class="sf-card p-6 md:p-8 reveal">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-        <div>
-          <div class="inline-flex items-center gap-2 mb-2 text-blue-600">
-            <svg class="sg-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M4 7.5l4-2.5 4 2.5 4-2.5 4 2.5v9l-4-2.5-4 2.5-4-2.5-4 2.5v-9z" />
-              <path d="M12 9.2a2 2 0 0 1 2 2c0 1.1-.8 2.4-2 3.7-1.2-1.3-2-2.6-2-3.7a2 2 0 0 1 2-2z" />
-              <circle cx="12" cy="11.2" r="0.7" />
-            </svg>
-            <span class="text-[11px] uppercase tracking-[0.22em] text-gray-500 font-semibold">REGIONY SPUŠTĚNÍ</span>
-          </div>
-          <h2 class="text-2xl font-semibold">Začínáme v Praze a Středočeském kraji</h2>
+    <div class="hero-visual">
+      <div class="card-stack">
+        <div class="card-float card-back1">
+          <div class="card-label">Příští výjezd</div>
+          <div style="font-size:1rem;font-weight:700;color:#1d1d1f">15. července 2025</div>
+          <div class="card-desc">Ke Šroubovně 12, Praha-západ</div>
         </div>
-        <div class="text-xs text-gray-500">
-          Další regiony přidáváme podle zájmu. Zanechte e‑mail a dejte nám vědět, odkud jste.
+        <div class="card-float card-back2">
+          <div class="card-label">Platba</div>
+          <div style="font-size:1rem;font-weight:700;color:#166534">Uhrazeno</div>
+          <div class="card-desc">Faktura odeslána e-mailem</div>
         </div>
-      </div>
-      <div class="grid md:grid-cols-3 gap-4 text-sm text-gray-600">
-        <div>
-          <h3 class="font-semibold mb-1">Praha</h3>
-          <p>Praha 1–10 a přilehlé obce v dojezdové vzdálenosti.</p>
-        </div>
-        <div>
-          <h3 class="font-semibold mb-1">Středočeský kraj</h3>
-          <p>Okresy Praha‑východ, Praha‑západ, Kladno, Mělník, Beroun, Kolín.</p>
-        </div>
-        <div>
-          <h3 class="font-semibold mb-1">Další regiony</h3>
-          <p>Postupně rozšiřujeme pokrytí na další kraje podle počtu zájemců.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Proč nám věřit -->
-  <section class="max-w-6xl mx-auto px-6 pb-16">
-    <div class="grid md:grid-cols-2 gap-10 items-start">
-      <div class="reveal">
-        <div class="inline-flex items-center gap-2 mb-2 text-blue-600">
-          <svg class="sg-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 3.5L7 5.5v5.7c0 3.1 1.9 5.9 5 7.3 3.1-1.4 5-4.2 5-7.3V5.5L12 3.5z" />
-            <path d="M9.5 11.5l1.7 1.7 3.3-3.4" />
-          </svg>
-          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">DŮVĚRYHODNÁ SLUŽBA</span>
-        </div>
-        <h2 class="text-2xl md:text-3xl font-semibold mb-3">Proč nám věřit</h2>
-        <ul class="text-sm text-gray-600 space-y-2 mb-4">
-          <li>• Ověření partneři vývozu v každém regionu.</li>
-          <li>• Transparentní orientační ceny a jasné podmínky služby.</li>
-          <li>• Možnost vývozu v nepřítomnosti s jasnými instrukcemi pro řidiče.</li>
-          <li>• Bezpečné zpracování osobních údajů dle GDPR.</li>
-        </ul>
-        <p class="text-xs text-gray-500">
-          V pilotním ověřování spolupracujeme s prvními zájemci v Praze a Středočeském kraji a ladíme proces vývozů, komunikace i cen tak, aby služba byla maximálně předvídatelná.
-        </p>
-      </div>
-      <div class="sf-card p-6 text-sm text-gray-600 reveal">
-        <p class="text-[11px] uppercase tracking-[0.22em] text-gray-400 font-semibold mb-3">FIREMNÍ ÚDAJE</p>
-        <p class="mb-2">
-          SepticGo <br>
-          IČO: 02705800 | DIČ: CZ02705800<br>
-          Sídlo: Grafická 1, 150 00 Praha
-        </p>
-        <p class="mb-2">
-          Telefon: +420 705 908 970<br>
-          E‑mail: <a href="mailto:go@septicgo.com" class="text-blue-600 hover:text-blue-700">go@septicgo.com</a>
-        </p>
-        <p>
-          Pracujeme v souladu s GDPR a platnými předpisy ČR a EU. Podrobnosti najdete v Obchodních podmínkách a Zásadách ochrany soukromí.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Rezervace / kalkulačka -->
-  <section id="rezervace" class="max-w-4xl mx-auto px-6 pb-16">
-    <div class="grid md:grid-cols-3 gap-4 mb-6">
-      <div class="sf-card p-4 text-sm text-gray-700 reveal">
-        <div class="inline-flex items-center gap-2 mb-2 text-blue-600">
-          <svg class="sg-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="7" y="3" width="10" height="18" rx="2" />
-            <circle cx="12" cy="17" r="0.9" />
-            <rect x="9.5" y="6.5" width="5" height="3.2" rx="0.8" />
-          </svg>
-          <span class="text-xs font-semibold uppercase tracking-[0.18em]">Bez telefonování</span>
-        </div>
-        <p class="text-xs text-gray-500">Výjezdy plánujeme dopředu, nemusíte obvolávat dopravce.</p>
-      </div>
-      <div class="sf-card p-4 text-sm text-gray-700 reveal">
-        <div class="inline-flex items-center gap-2 mb-2 text-blue-600">
-          <svg class="sg-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="3.5" y="9.5" width="17" height="9" rx="2" />
-            <path d="M5.5 13c1.2 1 2.3 1 3.5 0s2.3-1 3.5 0 2.3 1 3.5 0 2.3-1 3.5 0" />
-            <rect x="9.5" y="6.5" width="5" height="2" rx="0.8" />
-          </svg>
-          <span class="text-xs font-semibold uppercase tracking-[0.18em]">Bez přeplněné jímky</span>
-        </div>
-        <p class="text-xs text-gray-500">Termíny hlídáme podle plnění, ne až v krizové chvíli.</p>
-      </div>
-      <div class="sf-card p-4 text-sm text-gray-700 reveal">
-        <div class="inline-flex items-center gap-2 mb-2 text-blue-600">
-          <svg class="sg-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M6 5.5h6.3l4.7 4.7a1.7 1.7 0 0 1 0 2.4l-4.3 4.3a1.7 1.7 0 0 1-2.4 0L6 12.9V5.5z" />
-            <circle cx="9" cy="8.5" r="1" />
-            <path d="M11.2 12.2h2.1" />
-          </svg>
-          <span class="text-xs font-semibold uppercase tracking-[0.18em]">Bez nejasné ceny</span>
-        </div>
-        <p class="text-xs text-gray-500">Orientační cenu vidíte dopředu podle objemu a regionu.</p>
-      </div>
-    </div>
-
-    <div class="sf-card p-6 md:p-10 reveal">
-      <div class="mb-6 text-center">
-        <p class="text-[11px] uppercase tracking-[0.22em] text-gray-400 font-semibold mb-2">ORIENTAČNÍ KALKULAČKA</p>
-        <h2 class="text-2xl font-semibold">Spočítejte si cenu budoucího vývozu</h2>
-        <p class="mt-2 text-xs text-gray-500">
-          Kalkulačka je orientační. V pre‑launch fázi stačí zanechat e‑mail, podrobnosti upřesníme po spuštění ve vašem regionu.
-        </p>
-      </div>
-
-      <div id="step-1" class="step-card">
-        <h3 class="text-xl md:text-2xl font-semibold mb-6">1. Konfigurace vývozu</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div>
-            <label class="block text-xs uppercase tracking-widest font-bold text-gray-400 mb-3 text-left">Velikost jímky</label>
-            <select id="tank-size" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition appearance-none cursor-pointer">
-              <option value="5">Standardní (5 m³)</option>
-              <option value="8">Velká (8 m³)</option>
-              <option value="12">Extra (12 m³)</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs uppercase tracking-widest font-bold text-gray-400 mb-3 text-left">Frekvence vývozu</label>
-            <select id="frequency" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition appearance-none cursor-pointer">
-              <option value="once">Jednorázově</option>
-              <option value="monthly">Měsíčně (sleva 15 %)</option>
-              <option value="annual">Roční plán (sleva 25 %)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="mt-10 flex justify-between items-center bg-gray-50 p-5 rounded-3xl border border-gray-100">
-          <div class="text-xs md:text-sm text-gray-500 font-medium">Předpokládaná cena vč. DPH</div>
-          <div id="price-preview" class="text-2xl md:text-3xl font-bold text-blue-600 tracking-tight">--- Kč</div>
-        </div>
-
-        <div class="mt-8 flex justify-end">
-          <button onclick="nextStep(2)" class="btn-apple btn-apple-glow px-10 py-3 rounded-full font-semibold text-sm md:text-base">
-            Pokračovat
-          </button>
-        </div>
-      </div>
-
-      <div id="step-2" class="step-card step-hidden" style="display:none;">
-        <h3 class="text-xl md:text-2xl font-semibold mb-2 text-left">2. Lokalita a přístup</h3>
-        <p class="text-gray-500 mb-6 text-left text-sm md:text-base">Kam přesně bychom měli v budoucnu jezdit?</p>
-
-        <div class="space-y-6">
-          <div>
-            <label class="block text-xs uppercase tracking-widest font-bold text-gray-400 mb-3 text-left">Ulice a číslo popisné</label>
-            <input type="text" id="address" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="Např. Hlavní 123, Praha">
-          </div>
-
-          <div>
-            <label class="block text-xs uppercase tracking-widest font-bold text-gray-400 mb-3 text-left">Instrukce pro řidiče</label>
-            <textarea id="directions" rows="3" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="Kde najdeme jímku? Kód od zámku je..."></textarea>
-          </div>
-
-          <div class="flex items-center justify-between p-5 bg-blue-50 rounded-3xl border border-blue-100">
-            <div class="text-left">
-              <h4 class="font-semibold text-blue-900 text-sm">Vývoz v nepřítomnosti</h4>
-              <p class="text-xs md:text-sm text-blue-700">Souhlasím s vjezdem techniky bez mé fyzické přítomnosti (po spuštění služby).</p>
+        <div class="card-float card-main">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+            <div>
+              <div class="card-label">Celková cena</div>
+              <div class="card-price">3 750<span class="unit">Kč</span></div>
             </div>
-            <label class="switch">
-              <input type="checkbox" id="unattended-consent">
-              <span class="slider"></span>
-            </label>
+            <span class="badge-pill pill-green">
+              <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+              Aktivní plán
+            </span>
           </div>
-
-          <div class="flex justify-between items-center pt-6">
-            <button onclick="prevStep(1)" class="text-gray-400 text-sm font-medium hover:text-black transition">Zpět</button>
-            <button onclick="nextStep(3)" class="btn-apple btn-apple-glow px-10 py-3 rounded-full font-semibold text-sm md:text-base">
-              Rekapitulace
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div id="step-3" class="step-card step-hidden" style="display:none;">
-        <h3 class="text-xl md:text-2xl font-semibold mb-6 text-center">3. Rekapitulace</h3>
-
-        <div class="bg-gray-50 rounded-3xl p-6 md:p-8 mb-6 border border-gray-100">
-          <div class="flex justify-between mb-4 pb-4 border-b border-gray-200">
-            <span class="text-gray-500 font-medium text-xs md:text-sm text-left">Specifikace</span>
-            <span id="summary-config" class="font-semibold text-right text-xs md:text-sm">---</span>
-          </div>
-          <div class="flex justify-between mb-4 pb-4 border-b border-gray-200">
-            <span class="text-gray-500 font-medium text-xs md:text-sm text-left">Adresa vývozu</span>
-            <span id="summary-address" class="font-semibold text-right text-xs md:text-sm italic">---</span>
-          </div>
-          <div class="flex justify-between items-center">
-            <span class="text-sm md:text-base font-semibold text-gray-900 text-left">Odhadovaná cena</span>
-            <span id="summary-total" class="text-xl md:text-2xl font-bold text-blue-600">--- Kč</span>
+          <div class="card-desc">Rodinný dům · 8 000 l · každých 6 měsíců</div>
+          <div class="card-divider"></div>
+          <div class="card-label">Příprava výjezdu</div>
+          <div class="progress-track"><div class="progress-fill"></div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+            <span class="badge-pill pill-blue">
+              <svg width="8" height="8" viewBox="0 0 8 8" fill="#1e40af"><circle cx="4" cy="4" r="4"/></svg>
+              Probíhá
+            </span>
+            <span style="font-size:.7rem;color:#9ca3af">Partner přiřazen</span>
           </div>
         </div>
-
-        <div class="space-y-4 mb-6 text-xs text-gray-500 text-center">
-          <p>
-            V této fázi ještě neplatíte. Pro závaznou objednávku a notifikaci o spuštění služby stačí zanechat e‑mail výše, podrobnosti upřesníme před spuštěním ve vašem regionu.
-          </p>
+        <div class="float-badge fb-top">
+          <svg width="16" height="16" fill="none" stroke="#0071e3" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+          <span style="color:#6e6e73">Ověřený partner</span>
+        </div>
+        <div class="float-badge fb-bottom">
+          <span style="width:9px;height:9px;border-radius:50%;background:#22c55e;display:block;flex-shrink:0"></span>
+          <span style="color:#6e6e73">Výjezd dnes 14:00</span>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- FAQ -->
-  <section id="faq" class="max-w-4xl mx-auto px-6 pb-16">
-    <div class="text-center mb-8 reveal">
-      <h2 class="text-2xl md:text-3xl font-semibold mb-3">Časté otázky</h2>
-      <p class="text-sm md:text-base text-gray-600">Krátké odpovědi na to, co zajímá většinu klientů před prvním vývozem.</p>
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="reveal"><div class="stat-num" data-count="1200">0</div><div class="stat-label">Provedených výjezdů</div></div>
+    <div class="reveal"><div class="stat-num" data-count="8">0</div><div class="stat-label">Pokrytých regionů</div></div>
+    <div class="reveal"><div class="stat-num">98 %</div><div class="stat-label">Spokojených zákazníků</div></div>
+    <div class="reveal"><div class="stat-num">24 h</div><div class="stat-label">Průměrná odezva</div></div>
+  </div>
+</div>
+
+<!-- JAK TO FUNGUJE -->
+<section class="section" id="jak-to-funguje">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Jak to funguje</div>
+      <h2 class="section-title">Čtyři kroky k čisté jímce</h2>
+      <p class="section-sub">Celý proces vyřídíte online za méně než 3 minuty. Bez telefonování, bez čekání na odpověď. Systém pracuje za vás — vy jen potvrdíte objednávku.</p>
     </div>
-
-    <div class="space-y-4">
-      <details class="sf-card p-4 md:p-5 text-sm reveal">
-        <summary class="cursor-pointer font-semibold text-gray-900">Je služba už plně dostupná?</summary>
-        <p class="mt-2 text-gray-600">
-          SepticGo spouštíme postupně po regionech. Zadejte e‑mail a region působnosti a ozveme se, jakmile bude vaše lokalita aktivní.
-        </p>
-      </details>
-      <details class="sf-card p-4 md:p-5 text-sm reveal">
-        <summary class="cursor-pointer font-semibold text-gray-900">Jak funguje sleva za pravidelné vývozy?</summary>
-        <p class="mt-2 text-gray-600">
-          U pravidelných plánů nabízíme zvýhodněné ceny oproti jednorázovým výjezdům. Konkrétní výše se může lišit dle regionu a partnera, orientační částku uvidíte v kalkulačce.
-        </p>
-      </details>
-      <details class="sf-card p-4 md:p-5 text-sm reveal">
-        <summary class="cursor-pointer font-semibold text-gray-900">Může proběhnout vývoz bez mojí přítomnosti?</summary>
-        <p class="mt-2 text-gray-600">
-          Ano, pokud dopředu zadáte instrukce pro řidiče a povolíte vjezd techniky. Podrobnosti upřesníme při potvrzení služby.
-        </p>
-      </details>
-      <details class="sf-card p-4 md:p-5 text-sm reveal">
-        <summary class="cursor-pointer font-semibold text-gray-900">Jak zacházíte s osobními údaji?</summary>
-        <p class="mt-2 text-gray-600">
-          Osobní údaje zpracováváme pouze v rozsahu nezbytném pro poskytování služby a v souladu s GDPR. Podrobnosti najdete v Zásadách ochrany soukromí.
-        </p>
-      </details>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="max-w-6xl mx-auto px-6 pb-10 border-t border-gray-200 pt-8">
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-4">
-      <div>
-        <div class="text-[10px] text-gray-400 uppercase tracking-[0.28em] font-bold mb-2">
-          SEPTICGO
-        </div>
-        <p class="text-xs text-gray-500">
-          &copy; 2026 SepticGo | IČO: 02705800 | DIČ: CZ02705800<br>
-          Sídlo: Grafická 1, 150 00 Praha, Česká republika
-        </p>
-        <p class="text-xs text-gray-500 mt-2">
-          Tel.: +420 705 908 970 | E‑mail: <a href="mailto:go@septicgo.com" class="text-blue-600 hover:text-blue-700">go@septicgo.com</a><br>
-          Regiony: Praha, Středočeský kraj, další dle zájmu.
-        </p>
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <div class="step-num">1</div>
+        <div class="step-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3"/></svg></div>
+        <div class="step-title">Nakonfigurujete jímku</div>
+        <p class="step-desc">Zadáte velikost jímky, typ objektu a preferovanou frekvenci. Okamžitě vidíte orientační cenu bez skrytých poplatků.</p>
       </div>
-      <div class="flex flex-col md:items-end gap-3 text-xs text-gray-500 font-medium">
-        <div class="flex flex-wrap gap-4">
-          <a href="#jak-funguje" class="hover:text-blue-600 transition">Jak to funguje</a>
-          <a href="#pro-koho" class="hover:text-blue-600 transition">Pro koho</a>
-          <a href="#regiony" class="hover:text-blue-600 transition">Regiony</a>
-          <a href="#faq" class="hover:text-blue-600 transition">FAQ</a>
-        </div>
-        <div class="flex flex-wrap gap-4">
-          <a href="mailto:go@septicgo.com?subject=Dotaz%20k%20slu%C5%BEb%C4%9B%20SepticGo&body=Dobr%C3%BD%20den%2C%0D%0A%0D%0Am%C3%A1m%20dotaz%20k%20slu%C5%BEb%C4%9B%20SepticGo%3A%0D%0A%0D%0A%5Bsem%20napi%C5%A1te%20sv%C5%AFj%20dotaz%5D%0D%0A%0D%0AD%C4%9Bkuji.%0D%0A"
-             class="hover:text-blue-600 transition">
-            Kontakt e‑mailem
-          </a>
-          <a href="/obchodni-podminky" class="hover:text-blue-600 transition">Obchodní podmínky</a>
-          <a href="/ochrana-soukromi" class="hover:text-blue-600 transition">Ochrana soukromí</a>
-        </div>
+      <div class="step-card reveal">
+        <div class="step-num">2</div>
+        <div class="step-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+        <div class="step-title">Vyberete termín a adresu</div>
+        <p class="step-desc">Zvolíte datum, adresu a čas. Zapnete-li vývoz bez přítomnosti, zadáte instrukce pro řidiče — nemusíte být doma.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">3</div>
+        <div class="step-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg></div>
+        <div class="step-title">Zaplatíte online bezpečně</div>
+        <p class="step-desc">Platba kartou přes Stripe — jedno z nejbezpečnějších řešení na světě. Faktura přijde e-mailem okamžitě po potvrzení.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">4</div>
+        <div class="step-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg></div>
+        <div class="step-title">Partner přijede a odveze</div>
+        <p class="step-desc">Ověřený partner dorazí v dohodnutý čas, provede vývoz a pošle vám fotodokumentaci. Vy dostanete notifikaci na e-mail.</p>
       </div>
     </div>
-    <p class="text-[11px] text-gray-400 mt-2">
-      Provozovatel nakládá s osobními údaji v souladu s platnou legislativou EU a ČR (GDPR a související předpisy).
-    </p>
-  </footer>
+  </div>
+</section>
 
-  <!-- Sticky mobile CTA -->
-  <div class="sticky bottom-0 inset-x-0 z-40 apple-glass border-t border-gray-200/70 px-4 py-2 sticky-cta">
-    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
-      <span class="text-[11px] text-gray-600">Spuštění podle zájmu v jednotlivých regionech.</span>
-      <a href="#top" class="btn-apple btn-apple-glow px-4 py-2 rounded-full text-[11px] font-semibold">
-        Zanechat e‑mail pro spuštění
+<!-- PROČ NÁS -->
+<section class="section" style="background:#fff;padding-top:0">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Proč SepticGo</div>
+      <h2 class="section-title">Seriózní služba, transparentní přístup</h2>
+      <p class="section-sub">Nejsme jen zprostředkovatel — budujeme systém, který vám ušetří čas, peníze i nervy. Každý krok procesu je zdokumentovaný a dohledatelný.</p>
+    </div>
+    <div class="reasons-grid">
+      <div class="reason-card reveal">
+        <div class="reason-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg></div>
+        <div>
+          <div class="reason-title">Ověření partneři s licencí</div>
+          <p class="reason-desc">Každý partner prochází prověrkou — platná živnost, pojištění, reference. Nikdy nedošleme k vám nikoho, koho jsme si sami neověřili. Vaše jímka, vaše nemovitost, naše odpovědnost.</p>
+        </div>
+      </div>
+      <div class="reason-card reveal">
+        <div class="reason-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75"/></svg></div>
+        <div>
+          <div class="reason-title">Cena, kterou vidíte, je cena, kterou zaplatíte</div>
+          <p class="reason-desc">Kalkulačka ukáže přesnou cenu ještě před potvrzením. Žádné příplatky za dopravu, žádné poplatky za urgentní výjezd — cena je jasná od začátku.</p>
+        </div>
+      </div>
+      <div class="reason-card reveal">
+        <div class="reason-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg></div>
+        <div>
+          <div class="reason-title">Výjezd i bez vaší přítomnosti</div>
+          <p class="reason-desc">Jste na dovolené nebo v práci? Nevadí. Zadáte instrukce pro řidiče — kde je brána, kam zajet. Partner provede vývoz, odfotí dokončenou práci a vy se dozvíte jen výsledek.</p>
+        </div>
+      </div>
+      <div class="reason-card reveal">
+        <div class="reason-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg></div>
+        <div>
+          <div class="reason-title">Doklady a fotodokumentace ke každému výjezdu</div>
+          <p class="reason-desc">Faktura, fotografie před a po výjezdu, čas příjezdu — vše dostanete e-mailem. Ideální pro firmy, které vedou účetnictví nebo potřebují doložit pravidelnou údržbu.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CENÍK -->
+<section class="pricing-section" id="cenik">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Ceník</div>
+      <h2 class="section-title">Transparentní ceny.<br>Žádná překvapení.</h2>
+      <p class="section-sub">Čím pravidelněji vyvážíte, tím více ušetříte. Přesnou cenu vidíte v kalkulačce ještě před objednávkou.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-freq">Jednorázový výjezd</div>
+        <div class="price-amount"><span class="cur">od </span>2 500</div>
+        <div class="price-note">Kč · dle velikosti jímky</div>
+        <ul class="price-features">
+          <li><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Výjezd bez vaší přítomnosti</li>
+          <li><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Fotodokumentace výjezdu</li>
+          <li><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Faktura e-mailem okamžitě</li>
+          <li><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Ověřený partner s licencí</li>
+        </ul>
+        <a href="/booking" class="btn-price btn-outline">Objednat jednorázově</a>
+      </div>
+      <div class="price-card featured reveal">
+        <div class="price-best">Nejoblíbenější</div>
+        <div class="price-freq">Každých 6 měsíců</div>
+        <div class="price-amount"><span class="cur">od </span>2 125</div>
+        <div class="price-note">Kč · sleva 15 %</div>
+        <ul class="price-features">
+          <li><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Vše z jednorázového plánu</li>
+          <li><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Automatické plánování termínů</li>
+          <li><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Připomínky 14 dní předem</li>
+          <li><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Prioritní výběr termínu</li>
+        </ul>
+        <a href="/booking" class="btn-price btn-filled">Objednat pololetně</a>
+      </div>
+      <div class="price-card reveal">
+        <div class="price-freq">Jednou ročně</div>
+        <div class="price-amount"><span class="cur">od </span>1 875</div>
+        <div class="price-note">Kč · sleva 25 %</div>
+        <ul class="price-features">
+          <li><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Vše z pololetního plánu</li>
+          <li><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Nejvyšší úspora — 25 %</li>
+          <li><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Fixní cena platná celý rok</li>
+          <li><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Přednostní servis a podpora</li>
+        </ul>
+        <a href="/booking" class="btn-price btn-outline">Objednat ročně</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KALKULAČKA -->
+<section class="calc-section">
+  <div class="section-inner" style="text-align:center">
+    <div class="reveal">
+      <div class="section-label" style="text-align:center">Kalkulačka ceny</div>
+      <h2 class="section-title" style="text-align:center">Spočítejte si cenu za 30 sekund</h2>
+      <p class="section-sub" style="margin:0 auto;text-align:center">Vyberte velikost jímky a frekvenci vývozu — okamžitě uvidíte orientační cenu bez skrytých poplatků.</p>
+    </div>
+    <div class="calc-card reveal">
+      <div class="calc-row">
+        <div class="calc-label">Velikost jímky</div>
+        <div class="calc-opts">
+          <button class="calc-opt" data-group="size" data-val="5000">5 000 l — chata / byt</button>
+          <button class="calc-opt active" data-group="size" data-val="8000">8 000 l — rodinný dům</button>
+          <button class="calc-opt" data-group="size" data-val="12000">12 000 l — větší objekt</button>
+        </div>
+      </div>
+      <div class="calc-row">
+        <div class="calc-label">Frekvence vývozu</div>
+        <div class="calc-opts">
+          <button class="calc-opt" data-group="freq" data-val="0">Jednorázově</button>
+          <button class="calc-opt active" data-group="freq" data-val="6">Každých 6 měsíců &minus;15 %</button>
+          <button class="calc-opt" data-group="freq" data-val="12">Jednou ročně &minus;25 %</button>
+        </div>
+      </div>
+      <div class="calc-result">
+        <div style="text-align:left">
+          <div class="calc-label-sm">Orientační cena výjezdu</div>
+          <div class="calc-price" id="calc-price">3 188 Kč</div>
+          <div class="calc-note" id="calc-note">základ 2 500 Kč × 1,5 · sleva 15 %</div>
+        </div>
+        <a href="/booking" class="btn-primary" style="white-space:nowrap;flex-shrink:0">
+          Objednat
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRO KOHO -->
+<section class="section" id="pro-koho">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Pro koho</div>
+      <h2 class="section-title">Řešení pro každý objekt bez kanalizace</h2>
+      <p class="section-sub">Obsluhujeme rodinné domy, chaty i menší firmy v Praze a Středočeském kraji. Pokud váš objekt nemá přístup ke kanalizační síti, jsme tu pro vás.</p>
+    </div>
+    <div class="who-grid">
+      <div class="who-card reveal">
+        <div class="who-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg></div>
+        <div class="who-title">Rodinný dům</div>
+        <p class="who-desc">Pravidelný plán vývozu s automatickými připomínkami. Nikdy nezapomenete na termín — jímka nepřeteče a vy máte klid. Ideální pro rodiny, které tráví doma většinu roku.</p>
+      </div>
+      <div class="who-card reveal">
+        <div class="who-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg></div>
+        <div class="who-title">Chata a chalupa</div>
+        <p class="who-desc">Vývoz i v době, kdy u objektu nejste. Přijedeme v dohodnutý den, provedeme vývoz a odfotíme stav. Výborné pro chataře, kteří nemohou hlídat termíny.</p>
+      </div>
+      <div class="who-card reveal">
+        <div class="who-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg></div>
+        <div class="who-title">Firma a provozovna</div>
+        <p class="who-desc">Faktury vhodné pro účetnictví, pravidelné plánování a přednostní termíny. Ideální pro restaurace, farmy nebo menší firmy, které potřebují evidenci údržby.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="faq">
+  <div class="section-inner">
+    <div class="reveal" style="text-align:center">
+      <div class="section-label" style="text-align:center">Časté dotazy</div>
+      <h2 class="section-title" style="text-align:center">Máte otázky? Máme odpovědi.</h2>
+      <p class="section-sub" style="margin:0 auto;text-align:center">Pokud nenajdete odpověď, napište nám na <a href="mailto:go@septicgo.com" style="color:#0071e3;text-decoration:none;font-weight:600">go@septicgo.com</a></p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item reveal">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Musím být doma při výjezdu?
+          <span class="faq-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg></span>
+        </button>
+        <div class="faq-a">Ne. Při objednávce zapnete přepínač „vývoz bez přítomnosti" a zadáte instrukce pro řidiče — kde je brána, kam jet, kde je přístup k jímce. Řidič provede celý výjezd, odfotí dokončenou práci a vy dostanete fotodokumentaci e-mailem.</div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Jak rychle přijedete po objednávce?
+          <span class="faq-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg></span>
+        </button>
+        <div class="faq-a">Standardně do 48–72 hodin od potvrzení objednávky. V případě akutní situace nás kontaktujte telefonicky na +420 705 908 970 — pokusíme se výjezd urychlit.</div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Jaké regiony pokrýváte?
+          <span class="faq-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg></span>
+        </button>
+        <div class="faq-a">Aktuálně pokrýváme Prahu, Praha-západ, Praha-východ, Berounsko, Kladensko a Mělnicko. Síť partnerů postupně rozšiřujeme — pokud jste mimo tyto regiony, napište nám a přidáme vás na čekací seznam.</div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Co přesně je v ceně výjezdu?
+          <span class="faq-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg></span>
+        </button>
+        <div class="faq-a">Cena zahrnuje vývoz jímky, dopravu, fotodokumentaci a fakturu. Nezahrnuje čištění kanalizace, opravy nebo likvidaci nestandardního odpadu — tyto práce se řeší samostatně po dohodě.</div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Jak probíhá platba?
+          <span class="faq-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg></span>
+        </button>
+        <div class="faq-a">Platba probíhá online kartou přes Stripe před výjezdem. Číslo karty nikdy nevidíme — Stripe je jeden z nejbezpečnějších platebních systémů světa. Po zaplacení dostanete potvrzení a fakturu e-mailem.</div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Mohu objednávku zrušit nebo přesunout?
+          <span class="faq-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg></span>
+        </button>
+        <div class="faq-a">Přesunutí termínu je zdarma nejméně 24 hodin předem. Zrušení do 24 hodin před výjezdem je bez poplatku — vrátíme celou částku. Při pozdějším zrušení účtujeme stornopoplatek 500 Kč.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-card reveal">
+    <h2 class="cta-title">Připraveni začít?</h2>
+    <p class="cta-sub">Spočítejte si cenu za 30 sekund — bez registrace, bez závazků.<br>Vaše jímka je v pořádku až tehdy, když se o ni někdo stará.</p>
+    <div class="cta-actions">
+      <a href="/booking" class="btn-white">Spočítat cenu a objednat →</a>
+      <a href="tel:+420705908970" class="btn-ghost-cta">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"/></svg>
+        +420 705 908 970
       </a>
     </div>
   </div>
+</section>
 
-  <script>
-    const PRICES = {
-      base: 2500,
-      sizes: { "5": 1, "8": 1.5, "12": 2.1 },
-      discounts: { "once": 0, "monthly": 0.15, "annual": 0.25 }
-    };
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo">
+          <div class="logo-mark"></div>
+          <span class="logo-text" style="font-size:.95rem">SepticGo</span>
+        </a>
+        <p>Pravidelný vývoz jímky pro domy, chaty a provozovny. Ověření partneři, cena dopředu, výjezd i bez vaší přítomnosti.</p>
+        <p style="margin-top:12px;font-size:.78rem;color:#9ca3af">
+          <a href="tel:+420705908970" style="color:#6e6e73;text-decoration:none;display:block;margin-bottom:4px">+420 705 908 970</a>
+          <a href="mailto:go@septicgo.com" style="color:#6e6e73;text-decoration:none">go@septicgo.com</a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <h4>Služba</h4>
+        <ul>
+          <li><a href="#jak-to-funguje">Jak to funguje</a></li>
+          <li><a href="#cenik">Ceník</a></li>
+          <li><a href="#pro-koho">Pro koho</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="/booking">Objednat výjezd</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Klientský portál</h4>
+        <ul>
+          <li><a href="/dashboard">Přehled rezervací</a></li>
+          <li><a href="/booking">Nová objednávka</a></li>
+          <li><a href="/dashboard">Historie výjezdů</a></li>
+          <li><a href="/dashboard">Faktury ke stažení</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Pro partnery</h4>
+        <ul>
+          <li><a href="/partner">Portál partnera</a></li>
+          <li><a href="/partner">Přijaté zakázky</a></li>
+          <li><a href="mailto:go@septicgo.com">Stát se partnerem</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 SepticGo. Všechna práva vyhrazena.</p>
+      <p>Praha a Středočeský kraj</p>
+    </div>
+  </div>
+</footer>
 
-    let currentStep = 1;
+<script>
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
 
-    function calculatePrice() {
-      const size = document.getElementById('tank-size').value;
-      const freq = document.getElementById('frequency').value;
-      let total = Math.round((PRICES.base * PRICES.sizes[size]) * (1 - PRICES.discounts[freq]));
-
-      const formattedPrice = `${total.toLocaleString('cs-CZ')} Kč`;
-      document.getElementById('price-preview').innerText = formattedPrice;
-      document.getElementById('summary-total').innerText = formattedPrice;
-
-      const freqLabels = { once: 'Jednorázově', monthly: 'Měsíčně', annual: 'Ročně' };
-      document.getElementById('summary-config').innerText = `${size} m³, ${freqLabels[freq]}`;
-    }
-
-    function nextStep(step) {
-      if (step === 3) {
-        document.getElementById('summary-address').innerText =
-          document.getElementById('address').value || "Neuvedena";
-      }
-      const current = document.getElementById(`step-${currentStep}`);
-      current.classList.add('step-hidden');
-
-      setTimeout(() => {
-        current.style.display = 'none';
-        currentStep = step;
-        const next = document.getElementById(`step-${step}`);
-        next.style.display = 'block';
-        setTimeout(() => next.classList.remove('step-hidden'), 50);
-      }, 400);
-    }
-
-    function prevStep(step) {
-      nextStep(step);
-    }
-
-    const tankEl = document.getElementById('tank-size');
-    const freqEl = document.getElementById('frequency');
-    if (tankEl && freqEl) {
-      tankEl.addEventListener('change', calculatePrice);
-      freqEl.addEventListener('change', calculatePrice);
-      calculatePrice();
-    }
-
-    function buildWaitlistMailto() {
-      const emailInput = document.getElementById('waitlist-email');
-      const userEmail = emailInput ? emailInput.value.trim() : "";
-      const to = "go@septicgo.com";
-      const subject = encodeURIComponent("Předobjednávka služby SepticGo");
-      const bodyLines = [
-        "Dobrý den,",
-        "",
-        "mám zájem o službu SepticGo. Prosím o zapsání mezi zájemce.",
-        "",
-        "Region: [napište obec / okres]",
-        "Typ nemovitosti: [rodinný dům | chata | bytový dům | jiné]",
-        "Odhadovaný objem jímky: [5 m³ | 8 m³ | 12 m³ | nevím]",
-        "Jméno: [vaše jméno]",
-        "Telefon: [volitelně]",
-        "",
-        "Děkuji.",
-        "",
-        userEmail ? ("Kontaktní e‑mail: " + userEmail) : ""
-      ];
-      const body = encodeURIComponent(bodyLines.join("\n"));
-      return `mailto:${to}?subject=${subject}&body=${body}`;
-    }
-
-    const revealEls = document.querySelectorAll('.reveal');
-    const progressBar = document.getElementById('hero-progress');
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('reveal-visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
-
-    revealEls.forEach(el => observer.observe(el));
-
-    window.addEventListener('load', () => {
-      if (progressBar) {
-        requestAnimationFrame(() => {
-          progressBar.classList.add('ready');
-        });
-      }
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 55); obs.unobserve(e.target); }
     });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
-    const hero = document.querySelector('.hero-parallax');
-    let latestScrollY = window.scrollY;
-    let ticking = false;
+  const cObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target; const target = parseInt(el.dataset.count); if (!target) return;
+      let v = 0; const step = target / 55;
+      const t = setInterval(() => {
+        v += step;
+        if (v >= target) { el.textContent = target.toLocaleString('cs-CZ') + '+'; clearInterval(t); }
+        else el.textContent = Math.floor(v).toLocaleString('cs-CZ');
+      }, 16);
+      cObs.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('[data-count]').forEach(el => cObs.observe(el));
 
-    function onScroll() {
-      latestScrollY = window.scrollY;
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const offset = latestScrollY * 0.12;
-          if (hero) {
-            hero.style.transform = `translate3d(0, ${offset * -0.4}px, 0)`;
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
-    }
+  const MULT = { 5000: 1.0, 8000: 1.5, 12000: 2.1 };
+  const DISC = { 0: 0, 6: 0.15, 12: 0.25 };
+  const DL = { 0: 'bez slevy', 6: 'sleva 15 %', 12: 'sleva 25 %' };
+  let cSize = 8000, cFreq = 6;
 
-    window.addEventListener('scroll', onScroll, { passive: true });
-  </script>
+  function updateCalc() {
+    const p = Math.round(2500 * MULT[cSize] * (1 - DISC[cFreq]));
+    document.getElementById('calc-price').textContent = p.toLocaleString('cs-CZ') + ' Kč';
+    document.getElementById('calc-note').textContent = 'základ 2 500 Kč × ' + MULT[cSize] + ' · ' + DL[cFreq];
+  }
+
+  document.querySelectorAll('.calc-opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const g = btn.dataset.group;
+      document.querySelectorAll('[data-group="' + g + '"]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (g === 'size') cSize = parseInt(btn.dataset.val);
+      if (g === 'freq') cFreq = parseInt(btn.dataset.val);
+      updateCalc();
+    });
+  });
+  updateCalc();
+</script>
 </body>
 </html>
