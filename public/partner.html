@@ -1,166 +1,673 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SepticGo - Partner</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SepticGo | Portál partnera</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Segoe UI',sans-serif;background:#f0fdf4;color:#1a1a1a}
-    header{background:#16a34a;color:#fff;padding:20px 40px;display:flex;justify-content:space-between;align-items:center}
-    header h1{font-size:1.4rem}
-    nav a{color:#fff;text-decoration:none;margin-left:20px;font-weight:500}
-    .container{max-width:700px;margin:40px auto;padding:0 20px}
-    h2{color:#16a34a;margin-bottom:20px;margin-top:40px}
-    input,textarea,select{width:100%;padding:11px;margin-bottom:12px;border:1px solid #d1d5db;border-radius:8px;font-size:0.95rem}
-    button{padding:12px 24px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.95rem}
-    button:hover{background:#15803d}
-    .card{background:#fff;border:1px solid #d1fae5;border-radius:10px;padding:18px;margin-bottom:14px}
-    .card h4{margin-bottom:6px}
-    .card p{font-size:0.9rem;color:#555;margin-bottom:4px}
-    .status{display:inline-block;padding:4px 10px;border-radius:20px;font-size:0.8rem;font-weight:600;margin-bottom:8px}
-    .s-pending_partner{background:#fef9c3;color:#854d0e}
-    .s-awaiting_payment{background:#dbeafe;color:#1e40af}
-    .s-paid{background:#dcfce7;color:#166534}
-    .s-done{background:#e0e7ff;color:#3730a3}
-    .msg{margin-top:12px;padding:12px;border-radius:8px}
-    .msg-ok{background:#dcfce7;color:#166534}
-    .msg-err{background:#fee2e2;color:#991b1b}
-    .photos-grid{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
-    .photos-grid img{width:120px;height:90px;object-fit:cover;border-radius:6px;border:1px solid #d1fae5}
-    footer{background:#15803d;color:#fff;text-align:center;padding:20px;font-size:0.85rem;margin-top:60px}
+    :root { --blue:#0071e3; --dark:#1d1d1f; --gray:#6e6e73; --light:#f5f7fb; }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Inter',-apple-system,sans-serif; background:var(--light); color:var(--dark); -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+    body::before { content:""; pointer-events:none; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.022'/%3E%3C/svg%3E"); mix-blend-mode:overlay; z-index:9999; }
+
+    /* Nav */
+    .nav { position:fixed; top:0; left:0; right:0; z-index:100; height:58px; background:rgba(245,247,251,0.80); backdrop-filter:blur(32px) saturate(200%); -webkit-backdrop-filter:blur(32px) saturate(200%); border-bottom:1px solid rgba(255,255,255,0.6); box-shadow:0 1px 0 rgba(0,0,0,0.05),0 4px 24px rgba(0,0,0,0.04); }
+    .nav-inner { max-width:1140px; margin:0 auto; padding:0 1.5rem; height:100%; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+    .logo { display:flex; align-items:center; gap:9px; text-decoration:none; color:var(--dark); }
+    .logo-mark { width:30px; height:30px; border-radius:50%; background:linear-gradient(145deg,#3b82f6 0%,#0071e3 60%,#0058b0 100%); position:relative; overflow:hidden; box-shadow:0 4px 14px rgba(0,113,227,0.35),inset 0 1px 0 rgba(255,255,255,0.35); flex-shrink:0; }
+    .logo-mark::before { content:""; position:absolute; inset:3px; border-radius:50%; border:1.5px solid rgba(255,255,255,0.45); }
+    .logo-mark::after { content:""; position:absolute; bottom:0; left:3px; right:3px; height:38%; background:rgba(0,20,60,0.45); border-radius:50% 50% 0 0; }
+    .logo-text { font-size:1.05rem; font-weight:700; letter-spacing:-.025em; }
+    .nav-links { display:flex; align-items:center; gap:1.75rem; list-style:none; }
+    .nav-links a { font-size:.8rem; font-weight:500; color:#6e6e73; text-decoration:none; transition:color .2s; }
+    .nav-links a:hover { color:var(--dark); }
+    .nav-right { display:flex; align-items:center; gap:9px; }
+    .btn-ghost-sm { font-size:.77rem; font-weight:600; color:#6e6e73; text-decoration:none; padding:7px 13px; border-radius:9999px; border:1.5px solid rgba(0,0,0,0.10); background:rgba(255,255,255,0.6); backdrop-filter:blur(10px); transition:all .2s; display:inline-flex; align-items:center; gap:5px; cursor:pointer; font-family:inherit; }
+    .btn-ghost-sm:hover { color:var(--dark); border-color:rgba(0,0,0,0.2); background:rgba(255,255,255,0.9); }
+    .btn-nav { background:linear-gradient(135deg,#0071e3,#3b82f6); color:#fff; border:none; padding:8px 20px; border-radius:9999px; font-size:.8rem; font-weight:700; cursor:pointer; text-decoration:none; box-shadow:0 4px 16px rgba(0,113,227,0.28); transition:all .25s; font-family:inherit; }
+    .btn-nav:hover { transform:translateY(-1px); box-shadow:0 8px 24px rgba(0,113,227,0.38); }
+
+    /* Hero */
+    .p-hero { padding:108px 1.5rem 56px; background:radial-gradient(ellipse 80% 60% at 65% 30%,rgba(59,130,246,0.12),transparent 60%),radial-gradient(ellipse 60% 50% at 10% 70%,rgba(56,189,248,0.08),transparent 60%),#f5f7fb; }
+
+    /* Wrap */
+    .wrap { max-width:920px; margin:0 auto; padding:0 1.5rem; }
+
+    /* Tabs */
+    .tabs { display:flex; gap:4px; padding:5px; border-radius:14px; background:rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.06); margin-bottom:28px; width:fit-content; }
+    .tab-btn { padding:8px 22px; border-radius:10px; font-size:.82rem; font-weight:600; cursor:pointer; color:#6e6e73; background:transparent; border:none; transition:all .2s; font-family:inherit; }
+    .tab-btn.active { background:#fff; color:var(--dark); box-shadow:0 2px 8px rgba(0,0,0,0.08),0 1px 0 rgba(255,255,255,0.9); }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+
+    /* Cards */
+    .p-card { background:rgba(255,255,255,0.88); backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%); border:1px solid rgba(255,255,255,0.7); border-radius:1.5rem; box-shadow:0 8px 32px rgba(0,0,0,0.06),inset 0 1px 0 rgba(255,255,255,0.9); padding:28px; margin-bottom:20px; }
+
+    /* Form */
+    .p-input { width:100%; padding:11px 14px; border-radius:12px; border:1.5px solid rgba(0,0,0,0.10); background:rgba(255,255,255,0.8); font-family:inherit; font-size:.88rem; color:var(--dark); transition:border-color .2s; outline:none; }
+    .p-input:focus { border-color:#0071e3; box-shadow:0 0 0 3px rgba(0,113,227,0.10); }
+    .p-label { display:block; font-size:.78rem; font-weight:600; color:#6e6e73; text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px; }
+
+    /* Buttons */
+    .btn-primary { background:linear-gradient(135deg,#0071e3,#3b82f6); color:#fff; padding:11px 24px; border-radius:9999px; font-weight:700; font-size:.87rem; text-decoration:none; box-shadow:0 8px 24px rgba(0,113,227,0.25); transition:all .3s; display:inline-flex; align-items:center; gap:8px; border:none; cursor:pointer; font-family:inherit; }
+    .btn-primary:hover { transform:translateY(-1px); box-shadow:0 16px 32px rgba(0,113,227,0.35); }
+    .btn-primary:disabled { background:#d1d1d6; cursor:not-allowed; box-shadow:none; transform:none; }
+    .btn-outline { padding:11px 24px; border-radius:9999px; border:1.5px solid rgba(0,0,0,0.12); background:rgba(255,255,255,0.7); color:var(--dark); font-weight:600; font-size:.87rem; cursor:pointer; transition:all .2s; font-family:inherit; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
+    .btn-outline:hover { background:rgba(255,255,255,0.95); border-color:rgba(0,0,0,0.22); }
+
+    /* Badges */
+    .badge { display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:9999px; font-size:.72rem; font-weight:600; white-space:nowrap; }
+    .b-pending { background:rgba(253,224,71,0.18); color:#854d0e; border:1px solid rgba(253,224,71,0.4); }
+    .b-awaiting { background:rgba(59,130,246,0.12); color:#1e40af; border:1px solid rgba(59,130,246,0.2); }
+    .b-paid { background:rgba(74,222,128,0.15); color:#166534; border:1px solid rgba(74,222,128,0.3); }
+    .b-done { background:rgba(99,102,241,0.12); color:#3730a3; border:1px solid rgba(99,102,241,0.2); }
+
+    /* Info chips */
+    .chip { background:rgba(0,0,0,0.04); border-radius:10px; padding:8px 14px; font-size:.78rem; color:#6e6e73; }
+    .chip strong { color:var(--dark); display:block; font-size:.85rem; font-weight:600; margin-bottom:2px; }
+    .chips { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+
+    /* Drop zone */
+    .drop-zone { border:2px dashed rgba(0,113,227,0.25); border-radius:14px; padding:28px; text-align:center; cursor:pointer; transition:all .2s; background:rgba(0,113,227,0.03); }
+    .drop-zone:hover { border-color:rgba(0,113,227,0.5); background:rgba(0,113,227,0.05); }
+
+    /* Messages */
+    .msg { margin-top:12px; padding:12px 16px; border-radius:12px; font-size:.85rem; font-weight:500; }
+    .msg-ok { background:rgba(74,222,128,0.12); color:#166534; border:1px solid rgba(74,222,128,0.3); }
+    .msg-err { background:rgba(248,113,113,0.10); color:#991b1b; border:1px solid rgba(248,113,113,0.2); }
+
+    /* Photos */
+    .photos-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .photos-grid img { width:88px; height:66px; object-fit:cover; border-radius:10px; cursor:pointer; border:1px solid rgba(0,0,0,0.06); transition:transform .2s; }
+    .photos-grid img:hover { transform:scale(1.05); }
+
+    /* Partner CTA dark section */
+    .pcta { background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 60%,#0f172a 100%); border-radius:2rem; padding:56px 48px; margin:0 1.5rem 80px; max-width:920px; margin-left:auto; margin-right:auto; position:relative; overflow:hidden; }
+    .pcta::before { content:""; position:absolute; inset:0; background:radial-gradient(ellipse 70% 70% at 80% 20%,rgba(59,130,246,0.15),transparent); pointer-events:none; }
+    .pcta-grid { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; position:relative; z-index:1; }
+    .pcta-box { background:rgba(255,255,255,0.07); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.12); border-radius:1.5rem; padding:30px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.15); }
+
+    /* Auth modal */
+    .modal-bg { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.45); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity .25s; }
+    .modal-bg.open { opacity:1; pointer-events:all; }
+    .auth-card { background:rgba(255,255,255,0.92); backdrop-filter:blur(40px) saturate(180%); border:1px solid rgba(255,255,255,0.7); border-radius:2rem; padding:40px; width:100%; max-width:400px; box-shadow:0 40px 80px rgba(0,0,0,0.2),inset 0 1px 0 rgba(255,255,255,1); position:relative; }
+    .auth-close { position:absolute; top:16px; right:16px; width:32px; height:32px; border-radius:50%; background:rgba(0,0,0,0.06); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#6e6e73; transition:background .2s; font-family:inherit; }
+    .auth-close:hover { background:rgba(0,0,0,0.1); }
+    .social-btn { width:100%; padding:12px 16px; border-radius:12px; border:1.5px solid rgba(0,0,0,0.10); background:rgba(255,255,255,0.8); font-family:inherit; font-size:.85rem; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:all .2s; margin-bottom:10px; color:var(--dark); }
+    .social-btn:hover { background:#fff; border-color:rgba(0,0,0,0.2); box-shadow:0 4px 16px rgba(0,0,0,0.08); }
+    .social-btn.apple-btn { background:#000; color:#fff; border-color:#000; }
+    .social-btn.apple-btn:hover { background:#1a1a1a; }
+    .divider { display:flex; align-items:center; gap:12px; margin:18px 0; color:#d1d5db; font-size:.78rem; font-weight:500; }
+    .divider::before,.divider::after { content:""; flex:1; height:1px; background:rgba(0,0,0,0.08); }
+    .auth-input { width:100%; padding:11px 14px; border-radius:12px; border:1.5px solid rgba(0,0,0,0.10); background:rgba(255,255,255,0.9); font-family:inherit; font-size:.88rem; color:var(--dark); outline:none; transition:border-color .2s; margin-bottom:10px; }
+    .auth-input:focus { border-color:#0071e3; box-shadow:0 0 0 3px rgba(0,113,227,0.10); }
+
+    /* Lightbox */
+    .lightbox { position:fixed; inset:0; z-index:300; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity .2s; cursor:zoom-out; }
+    .lightbox.open { opacity:1; pointer-events:all; }
+    .lightbox img { max-width:100%; max-height:90vh; border-radius:16px; box-shadow:0 40px 80px rgba(0,0,0,0.5); }
+
+    /* Footer */
+    .footer { background:#fff; border-top:1px solid rgba(0,0,0,0.06); }
+    .footer-inner { max-width:1140px; margin:0 auto; padding:60px 1.5rem 40px; }
+    .footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:3rem; margin-bottom:40px; }
+    .footer-brand p { font-size:.82rem; color:#9ca3af; line-height:1.7; margin-top:14px; }
+    .footer-col h4 { font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#9ca3af; margin-bottom:14px; }
+    .footer-col ul { list-style:none; }
+    .footer-col ul li { margin-bottom:9px; }
+    .footer-col ul li a { font-size:.82rem; color:#6e6e73; text-decoration:none; transition:color .2s; cursor:pointer; }
+    .footer-col ul li a:hover { color:var(--dark); }
+    .footer-bottom { padding-top:1.5rem; border-top:1px solid #f3f4f6; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .footer-bottom p { font-size:.75rem; color:#d1d5db; }
+
+    /* Reveal */
+    .reveal { opacity:0; transform:translateY(20px); transition:opacity .65s cubic-bezier(.22,.61,.36,1),transform .65s cubic-bezier(.22,.61,.36,1); }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+
+    @keyframes spin { to { transform:rotate(360deg); } }
+    @media (max-width:768px) {
+      .pcta-grid { grid-template-columns:1fr; gap:28px; }
+      .footer-grid { grid-template-columns:1fr 1fr; gap:2rem; }
+      .pcta { padding:40px 24px; margin-left:1rem; margin-right:1rem; }
+      .nav-links { display:none; }
+    }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>SepticGo - Partner portal</h1>
-  <nav>
-    <a href="/">Hlavni stranka</a>
-    <a href="/admin">Admin</a>
-  </nav>
-</header>
-
-<div class="container">
-
-  <h2>Nacist vyjezd podle ID</h2>
-  <div style="display:flex;gap:10px">
-    <input type="number" id="search-id" placeholder="ID vyjezdu" style="flex:1" />
-    <button onclick="loadBooking()">Nacist</button>
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo">
+      <div class="logo-mark"></div>
+      <span class="logo-text">SepticGo</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/#jak-to-funguje">Jak to funguje</a></li>
+      <li><a href="/#cenik">Ceník</a></li>
+      <li><a href="/#pro-koho">Pro koho</a></li>
+      <li><a href="/#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-right">
+      <button onclick="openAuth('login')" class="btn-ghost-sm">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+        Přihlásit se
+      </button>
+      <a href="/partner" class="btn-ghost-sm" style="color:#0071e3;border-color:rgba(0,113,227,0.25);background:rgba(0,113,227,0.06)">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg>
+        Portál partnera
+      </a>
+      <a href="/booking" class="btn-nav">Objednat vývoz →</a>
+    </div>
   </div>
-  <div id="booking-detail" style="margin-top:16px"></div>
+</nav>
 
-  <h2>Oznacit vyjezd jako dokonceny</h2>
-  <form id="complete-form">
-    <input type="number" name="booking_id" placeholder="ID vyjezdu *" required />
-    <textarea name="note" rows="3" placeholder="Poznamka ridice (nepovinne)"></textarea>
-    abel style="display:block;margin-bottom:8px;font-weight:600">Fotky po vyvozu</label>
-    <input type="file" name="photos" multiple accept="image/*" />
-    <br/>
-    <button type="submit" style="margin-top:12px">Ulozit a dokoncit</button>
-  </form>
-  <div id="complete-message"></div>
+<!-- HERO -->
+<div class="p-hero">
+  <div class="wrap">
+    <div style="display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:9999px;margin-bottom:1.4rem;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#0071e3;background:rgba(0,113,227,0.08);border:1px solid rgba(0,113,227,0.18)">
+      <span style="width:7px;height:7px;border-radius:50%;background:#0071e3;display:inline-block;animation:blink 2s ease-in-out infinite"></span>
+      Partnerský portál
+    </div>
+    <h1 style="font-size:clamp(1.9rem,3.5vw,3rem);font-weight:800;letter-spacing:-.04em;line-height:1.1;margin-bottom:1rem">
+      Portál partnera.<br>
+      <span style="background:linear-gradient(135deg,#0071e3,#3b82f6 50%,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Zakázky online, bez volání.</span>
+    </h1>
+    <p style="font-size:.95rem;color:#6e6e73;max-width:500px;line-height:1.72;margin-bottom:2rem">Přijaté zakázky, fotodokumentace po vývozu, označení jako dokončeno — vše přehledně na jednom místě. Platby zaručeny předem přes Stripe.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button onclick="openAuth('login')" class="btn-primary">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+        Přihlásit se do portálu
+      </button>
+      <a href="#stat-se-partnerem" class="btn-outline">Stát se partnerem</a>
+    </div>
+  </div>
+</div>
 
-  <h2>Vsechny vyjezdy cekajici na potvrzeni</h2>
-  <button onclick="loadPending()">Nacist cekajici</button>
-  <div id="pending-list" style="margin-top:16px"></div>
+<!-- MAIN -->
+<div class="wrap" style="padding-top:44px;padding-bottom:16px">
+
+  <div class="tabs reveal">
+    <button class="tab-btn active" onclick="switchTab('zakazky',this)">Přijaté zakázky</button>
+    <button class="tab-btn" onclick="switchTab('sprava',this)">Správa výjezdů</button>
+    <button class="tab-btn" onclick="switchTab('hledat',this)">Najít zakázku</button>
+  </div>
+
+  <!-- Přijaté zakázky -->
+  <div id="tab-zakazky" class="tab-panel active">
+    <div class="p-card reveal" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <div>
+        <h3 style="font-size:1rem;font-weight:700;letter-spacing:-.02em;margin-bottom:4px">Zakázky čekající na potvrzení</h3>
+        <p style="font-size:.85rem;color:#6e6e73">Nové zakázky přiřazené vašemu regionu. Po potvrzení zákazník obdrží výzvu k platbě.</p>
+      </div>
+      <button onclick="loadPending()" class="btn-primary" style="white-space:nowrap;flex-shrink:0">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+        Načíst zakázky
+      </button>
+    </div>
+    <div id="pending-list"></div>
+    <div id="pending-empty" class="hidden p-card reveal" style="text-align:center;padding:48px 20px">
+      <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24" style="margin:0 auto 14px;color:#e5e7eb"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      <p style="font-size:.9rem;font-weight:600;color:#6e6e73">Žádné čekající zakázky</p>
+      <p style="font-size:.82rem;color:#9ca3af;margin-top:4px">Nové zakázky se zobrazí po přiřazení vašemu regionu.</p>
+    </div>
+  </div>
+
+  <!-- Správa výjezdů -->
+  <div id="tab-sprava" class="tab-panel">
+    <div class="p-card reveal">
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:4px">Označit výjezd jako dokončený</h3>
+      <p style="font-size:.85rem;color:#6e6e73;margin-bottom:20px">Nahrajte fotky po vývozu a potvrďte dokončení. Zákazník obdrží e-mail s fotodokumentací.</p>
+      <form id="complete-form">
+        <div style="margin-bottom:14px">
+          <label class="p-label">ID výjezdu *</label>
+          <input type="number" name="booking_id" class="p-input" placeholder="Např. 42" required>
+        </div>
+        <div style="margin-bottom:14px">
+          <label class="p-label">Poznámka řidiče</label>
+          <textarea name="note" class="p-input" rows="3" placeholder="Vše proběhlo bez problémů, jímka byla přístupná ze severní strany..."></textarea>
+        </div>
+        <div style="margin-bottom:20px">
+          <label class="p-label">Fotografie po vývozu</label>
+          <div class="drop-zone" onclick="document.getElementById('photos-input').click()">
+            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="margin:0 auto 10px;color:#9ca3af"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+            <p style="font-size:.85rem;color:#9ca3af">Přetáhněte fotky nebo <span style="color:#0071e3;font-weight:600">klikněte pro výběr</span></p>
+            <p style="font-size:.75rem;color:#d1d5db;margin-top:4px">JPG, PNG, HEIC — max. 20 MB / fotka</p>
+          </div>
+          <input type="file" id="photos-input" name="photos" multiple accept="image/*" style="display:none" onchange="previewPhotos(this)">
+          <div id="photo-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"></div>
+        </div>
+        <button type="submit" class="btn-primary">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          Uložit a dokončit výjezd
+        </button>
+      </form>
+      <div id="complete-message"></div>
+    </div>
+  </div>
+
+  <!-- Najít zakázku -->
+  <div id="tab-hledat" class="tab-panel">
+    <div class="p-card reveal">
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:4px">Vyhledat zakázku podle ID</h3>
+      <p style="font-size:.85rem;color:#6e6e73;margin-bottom:18px">Zadejte číslo výjezdu pro zobrazení detailu a fotek.</p>
+      <div style="display:flex;gap:10px;margin-bottom:20px">
+        <input type="number" id="search-id" class="p-input" placeholder="ID výjezdu" style="flex:1">
+        <button onclick="loadBooking()" class="btn-primary" style="white-space:nowrap">Vyhledat</button>
+      </div>
+      <div id="booking-detail"></div>
+    </div>
+  </div>
 
 </div>
 
-<footer>2026 SepticGo</footer>
+<!-- STÁT SE PARTNEREM -->
+<div id="stat-se-partnerem" class="pcta reveal">
+  <div class="pcta-grid">
+    <div>
+      <div style="display:inline-flex;align-items:center;gap:7px;padding:4px 12px;border-radius:9999px;margin-bottom:1.2rem;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(148,210,255,0.85);background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15)">
+        Spolupráce
+      </div>
+      <h2 style="font-size:clamp(1.5rem,2.6vw,2.2rem);font-weight:800;color:#fff;letter-spacing:-.04em;line-height:1.18;margin-bottom:.9rem">Přidejte se k síti<br>ověřených partnerů.</h2>
+      <p style="color:rgba(255,255,255,0.5);font-size:.88rem;line-height:1.75;margin-bottom:1.4rem">Hledáme spolehlivé dopravce s cisternami, regionální koordinátory i referral partnery. Zakázky dostáváte přes aplikaci — platby vždy zaručeny předem.</p>
+      <ul style="list-style:none">
+        <li style="display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.65);font-size:.85rem;margin-bottom:10px">
+          <span style="width:20px;height:20px;border-radius:50%;background:rgba(74,222,128,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="10" height="10" fill="none" stroke="#4ade80" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Platba zákazníka zaručena předem — žádné vymáhání
+        </li>
+        <li style="display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.65);font-size:.85rem;margin-bottom:10px">
+          <span style="width:20px;height:20px;border-radius:50%;background:rgba(74,222,128,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="10" height="10" fill="none" stroke="#4ade80" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Zakázky rovnou do vašeho regionu, bez shánění zákazníků
+        </li>
+        <li style="display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.65);font-size:.85rem;margin-bottom:10px">
+          <span style="width:20px;height:20px;border-radius:50%;background:rgba(74,222,128,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="10" height="10" fill="none" stroke="#4ade80" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Digitální správa výjezdů — bez papírování a telefonátů
+        </li>
+      </ul>
+    </div>
+    <div class="pcta-box">
+      <h3 style="color:#fff;font-size:1rem;font-weight:700;margin-bottom:8px">Napište nám o spolupráci</h3>
+      <p style="color:rgba(255,255,255,0.45);font-size:.82rem;line-height:1.65;margin-bottom:22px">Kliknutím předvyplníme za vás e-mail se všemi možnostmi spolupráce. Stačí doplnit vaše údaje a odeslat.</p>
+      <button onclick="openPartnerEmail()" class="btn-primary" style="width:100%;justify-content:center">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+        Předvyplnit e-mail o spolupráci
+      </button>
+      <p style="text-align:center;margin-top:14px;font-size:.75rem;color:rgba(255,255,255,0.28)">nebo zavolejte <a href="tel:+420705908970" style="color:rgba(255,255,255,0.45);text-decoration:none">+420 705 908 970</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div id="auth-modal" class="modal-bg" onclick="if(event.target===this)closeAuth()">
+  <div class="auth-card">
+    <button class="auth-close" onclick="closeAuth()">
+      <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+    <div style="display:flex;justify-content:center;margin-bottom:20px">
+      <div class="logo-mark" style="width:44px;height:44px"></div>
+    </div>
+    <h2 style="font-size:1.3rem;font-weight:800;text-align:center;letter-spacing:-.035em;margin-bottom:6px" id="auth-title">Přihlásit se</h2>
+    <p style="font-size:.83rem;color:#6e6e73;text-align:center;margin-bottom:26px" id="auth-subtitle">Přistupte ke svému partnerskému portálu</p>
+
+    <button class="social-btn apple-btn" onclick="window.location.href='/api/auth/apple'">
+      <svg width="16" height="16" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 391.2 0 229.9 0 79.4c0-75.9 8-151.2 70.5-151.2 54.3 0 98.3 36.8 132 36.8 32.1 0 82.4-38.8 127.8-38.8 19.5 0 76.9 3.2 116.3 61.6zm-71.1-192.5c3.9-43.5 17.2-88.4 49.4-124 30-33.2 77.2-56.4 118.1-56.4 3.2 29.9-7.8 59.8-28.4 82.4-20.7 23.9-56.4 43.5-95.8 40.9z"/></svg>
+      Pokračovat přes Apple
+    </button>
+    <button class="social-btn" onclick="window.location.href='/api/auth/google'">
+      <svg width="16" height="16" viewBox="0 0 533 544" fill="none"><path fill="#4285F4" d="M533.5 278.4c0-18.5-1.5-37.1-4.7-55.3H272.1v104.8h147c-6.1 33.8-25.7 63.7-54.4 82.7v68h87.7c51.5-47.4 81.1-117.4 81.1-200.2z"/><path fill="#34A853" d="M272.1 544c73.4 0 135.3-24.1 180.4-65.7l-87.7-68c-24.4 16.6-55.9 26-92.6 26-71 0-131.2-47.9-152.8-112.3H28.9v70.1C75.1 486.3 169.2 544 272.1 544z"/><path fill="#FBBC04" d="M119.3 324c-11.4-33.8-11.4-70.4 0-104.2V149.7H28.9c-38.6 76.9-38.6 167.5 0 244.4L119.3 324z"/><path fill="#EA4335" d="M272.1 107.7c38.8-.6 76.3 14 104.4 40.8l77.7-77.7C405 24.6 339.7-.8 272.1 0 169.2 0 75.1 57.8 28.9 149.7l90.4 70.1c21.5-64.5 81.8-112.1 152.8-112.1z"/></svg>
+      Pokračovat přes Google
+    </button>
+
+    <div class="divider">nebo e-mailem</div>
+    <form onsubmit="submitAuth(event)">
+      <div id="auth-name-row" style="display:none">
+        <input type="text" class="auth-input" id="auth-name" placeholder="Celé jméno">
+      </div>
+      <input type="email" class="auth-input" id="auth-email" placeholder="E-mail" required>
+      <input type="password" class="auth-input" id="auth-password" placeholder="Heslo" required>
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;margin-top:4px" id="auth-submit-btn">Přihlásit se</button>
+    </form>
+    <p style="text-align:center;margin-top:16px;font-size:.8rem;color:#6e6e73">
+      <span id="auth-toggle-text">Nemáte účet?</span>
+      <a onclick="toggleAuthMode()" id="auth-toggle-link" style="color:#0071e3;font-weight:600;cursor:pointer;margin-left:5px">Registrovat se</a>
+    </p>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo">
+          <div class="logo-mark"></div>
+          <span class="logo-text" style="font-size:.95rem">SepticGo</span>
+        </a>
+        <p>Pravidelný vývoz jímky pro domy, chaty a provozovny. Ověření partneři, cena dopředu, výjezd i bez vaší přítomnosti.</p>
+        <p style="margin-top:12px;font-size:.78rem;color:#9ca3af">
+          <a href="tel:+420705908970" style="color:#6e6e73;text-decoration:none;display:block;margin-bottom:4px">+420 705 908 970</a>
+          <a href="mailto:go@septicgo.com" style="color:#6e6e73;text-decoration:none">go@septicgo.com</a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <h4>Služba</h4>
+        <ul>
+          <li><a href="/#jak-to-funguje">Jak to funguje</a></li>
+          <li><a href="/#cenik">Ceník</a></li>
+          <li><a href="/#pro-koho">Pro koho</a></li>
+          <li><a href="/#faq">FAQ</a></li>
+          <li><a href="/booking">Objednat výjezd</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Klientský portál</h4>
+        <ul>
+          <li><a href="/dashboard">Přehled rezervací</a></li>
+          <li><a href="/booking">Nová objednávka</a></li>
+          <li><a href="/dashboard">Historie výjezdů</a></li>
+          <li><a href="/dashboard">Faktury ke stažení</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Pro partnery</h4>
+        <ul>
+          <li><a href="/partner">Portál partnera</a></li>
+          <li><a href="/partner">Přijaté zakázky</a></li>
+          <li><a onclick="openPartnerEmail()">Stát se partnerem</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 SepticGo. Všechna práva vyhrazena.</p>
+      <p>Praha a Středočeský kraj</p>
+    </div>
+  </div>
+</footer>
 
 <script>
-  async function loadBooking() {
-    const id = document.getElementById("search-id").value;
-    const detail = document.getElementById("booking-detail");
-    if (id === "") { detail.innerHTML = "<p>Zadejte ID.</p>"; return; }
-    detail.innerHTML = "<p>Nacitam...</p>";
-    try {
-      const res = await fetch("/api/bookings/" + id);
-      if (res.status === 404) { detail.innerHTML = "<p>Vyjezd nenalezen.</p>"; return; }
-      const b = await res.json();
-      const photos = await (await fetch("/api/uploads/" + id + "/photos")).json();
-      const photoHtml = photos.length > 0
-        ? "<div class=\"photos-grid\">" + photos.map(p => "<img src=\"" + p.url + "\" alt=\"foto\" />").join("") + "</div>"
-        : "<p style=\"font-size:0.85rem;color:#888\">Zadne fotky.</p>";
-      detail.innerHTML = "<div class=\"card\"><h4>" + b.address + "</h4><span class=\"status s-" + b.status + "\">" + b.status + "</span><p>Zakaznik: " + (b.customer_name || "neuvedeno") + "</p><p>Email: " + b.customer_email + "</p><p>Telefon: " + (b.customer_phone || "neuvedeno") + "</p><p>Jimka: " + (b.tank_size_liters || "neuvedeno") + " l</p><p>Termin: " + (b.preferred_date || "neuvedeno") + "</p><p>Cena: " + b.price_czk + " Kc</p>" + photoHtml + "</div>";
-    } catch(err) {
-      detail.innerHTML = "<p>Chyba pri nacitani.</p>";
-    }
+  // ── Tab switching ────────────────────────────────────────────────────────────
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + name).classList.add('active');
+    setTimeout(triggerReveal, 50);
   }
 
-  document.getElementById("complete-form").addEventListener("submit", async function(e) {
-    e.preventDefault();
-    const form = e.target;
-    const bookingId = form.booking_id.value;
-    const msg = document.getElementById("complete-message");
-    msg.className = "msg";
-    msg.textContent = "Ukladam...";
-
-    try {
-      if (form.photos.files.length > 0) {
-        const fd = new FormData();
-        for (const f of form.photos.files) fd.append("photos", f);
-        fd.append("type", "after");
-        const upRes = await fetch("/api/uploads/" + bookingId + "/photos", { method: "POST", body: fd });
-        if (upRes.ok === false) {
-          msg.className = "msg msg-err";
-          msg.textContent = "Chyba pri nahravani fotek.";
-          return;
-        }
-      }
-
-      const patchRes = await fetch("/api/bookings/" + bookingId, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "done" })
-      });
-
-      if (patchRes.ok) {
-        msg.className = "msg msg-ok";
-        msg.textContent = "Vyjezd oznacen jako dokonceny. E-mail zakaznikovi byl odeslan.";
-        form.reset();
-      } else {
-        msg.className = "msg msg-err";
-        msg.textContent = "Chyba pri aktualizaci statusu.";
-      }
-    } catch(err) {
-      msg.className = "msg msg-err";
-      msg.textContent = "Chyba pri ukladani.";
-    }
-  });
-
+  // ── Load pending orders ──────────────────────────────────────────────────────
   async function loadPending() {
-    const list = document.getElementById("pending-list");
-    list.innerHTML = "<p>Nacitam...</p>";
+    const list = document.getElementById('pending-list');
+    const empty = document.getElementById('pending-empty');
+    list.innerHTML = '<div style="text-align:center;padding:36px;color:#9ca3af"><div style="width:30px;height:30px;border:3px solid rgba(0,113,227,0.2);border-top-color:#0071e3;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px"></div>Načítám zakázky...</div>';
+    empty.classList.add('hidden');
     try {
-      const res = await fetch("/api/bookings?status=pending_partner");
+      const res = await fetch('/api/bookings?status=pending_partner');
       const bookings = await res.json();
-      if (bookings.length === 0) { list.innerHTML = "<p>Zadne cekajici vyjezdy.</p>"; return; }
-      list.innerHTML = bookings.map(b =>
-        "<div class=\"card\"><h4>" + b.address + "</h4><span class=\"status s-" + b.status + "\">" + b.status + "</span><p>Zakaznik: " + (b.customer_name || "neuvedeno") + "</p><p>Email: " + b.customer_email + "</p><p>Termin: " + (b.preferred_date || "neuvedeno") + "</p><p>ID: " + b.id + "</p><button onclick=\"confirmBooking(" + b.id + ")\">Potvrdit a poslat platbu</button></div>"
-      ).join("");
-    } catch(err) {
-      list.innerHTML = "<p>Chyba pri nacitani.</p>";
+      list.innerHTML = '';
+      if (!bookings.length) { empty.classList.remove('hidden'); return; }
+      bookings.forEach(b => {
+        const el = document.createElement('div');
+        el.className = 'p-card reveal';
+        const date = b.preferred_date ? new Date(b.preferred_date).toLocaleDateString('cs-CZ') : 'Neurčeno';
+        el.innerHTML = `
+          <div style="display:flex;align-items:start;justify-content:space-between;gap:12px;margin-bottom:4px">
+            <div>
+              <h3 style="font-size:1rem;font-weight:700;letter-spacing:-.02em">${escHtml(b.address)}</h3>
+              <p style="font-size:.78rem;color:#9ca3af;margin-top:3px">Rezervace #${b.id} &middot; ${escHtml(b.customer_name || 'neuvedeno')}</p>
+            </div>
+            <span class="badge b-pending">Čeká na potvrzení</span>
+          </div>
+          <div class="chips">
+            <div class="chip"><strong>${date}</strong>Termín</div>
+            <div class="chip"><strong>${b.tank_size_liters ? b.tank_size_liters.toLocaleString('cs-CZ') + ' l' : '—'}</strong>Jímka</div>
+            <div class="chip"><strong>${Number(b.price_czk).toLocaleString('cs-CZ')} Kč</strong>Cena</div>
+            <div class="chip"><strong>${escHtml(b.region || '—')}</strong>Region</div>
+          </div>
+          <div style="margin-top:16px">
+            <button onclick="confirmBooking(${b.id}, this)" class="btn-primary" style="font-size:.82rem;padding:9px 20px">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+              Potvrdit a odeslat platební odkaz zákazníkovi
+            </button>
+          </div>
+        `;
+        list.appendChild(el);
+      });
+      triggerReveal();
+    } catch(e) {
+      list.innerHTML = '<div class="msg msg-err">Chyba při načítání zakázek. Zkuste to znovu.</div>';
     }
   }
 
-  async function confirmBooking(bookingId) {
+  async function confirmBooking(bookingId, btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="animation:spin 1s linear infinite"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg> Odesílám...';
     try {
-      const res = await fetch("/api/payments/create-checkout-session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/payments/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ booking_id: bookingId })
       });
       const data = await res.json();
       if (data.url) {
-        alert("Platebni odkaz odeslan zakaznikovi emailem. URL: " + data.url);
-        loadPending();
+        btn.closest('.p-card').innerHTML = '<div class="msg msg-ok">✓ Platební odkaz odeslán zákazníkovi e-mailem. Zakázka #' + bookingId + ' potvrzena.</div>';
+      } else {
+        btn.disabled = false;
+        btn.innerHTML = 'Potvrdit a odeslat platební odkaz zákazníkovi';
       }
-    } catch(err) {
-      alert("Chyba pri vytvareni platby.");
+    } catch(e) {
+      btn.disabled = false;
+      btn.innerHTML = 'Potvrdit a odeslat platební odkaz zákazníkovi';
     }
   }
+
+  // ── Find booking by ID ───────────────────────────────────────────────────────
+  async function loadBooking() {
+    const id = document.getElementById('search-id').value;
+    const detail = document.getElementById('booking-detail');
+    if (!id) { detail.innerHTML = '<div class="msg msg-err">Zadejte ID výjezdu.</div>'; return; }
+    detail.innerHTML = '<div style="text-align:center;padding:28px;color:#9ca3af"><div style="width:28px;height:28px;border:3px solid rgba(0,113,227,0.2);border-top-color:#0071e3;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 10px"></div>Načítám...</div>';
+    try {
+      const [bRes, pRes] = await Promise.all([
+        fetch('/api/bookings/' + id),
+        fetch('/api/uploads/' + id + '/photos')
+      ]);
+      if (bRes.status === 404) { detail.innerHTML = '<div class="msg msg-err">Výjezd #' + id + ' nebyl nalezen.</div>'; return; }
+      const b = await bRes.json();
+      const photos = await pRes.json();
+      const date = b.preferred_date ? new Date(b.preferred_date).toLocaleDateString('cs-CZ') : 'Neurčeno';
+      const statusMap = { pending_partner:'Čeká na partnera', awaiting_payment:'Čeká na platbu', paid:'Zaplaceno', done:'Dokončeno', cancelled:'Zrušeno' };
+      const badgeMap = { pending_partner:'b-pending', awaiting_payment:'b-awaiting', paid:'b-paid', done:'b-done' };
+      const photoHtml = photos.length > 0
+        ? '<div class="photos-grid">' + photos.map(p => `<img src="${escHtml(p.url)}" onclick="openLightbox('${escHtml(p.url)}')" alt="">`).join('') + '</div>'
+        : '<p style="font-size:.82rem;color:#9ca3af;margin-top:8px">Žádné fotografie</p>';
+      detail.innerHTML = `
+        <div style="border-top:1px solid rgba(0,0,0,0.06);margin-top:4px;padding-top:20px">
+          <div style="display:flex;align-items:start;justify-content:space-between;gap:12px;margin-bottom:14px">
+            <h3 style="font-size:1rem;font-weight:700">${escHtml(b.address)}</h3>
+            <span class="badge ${badgeMap[b.status]||'b-pending'}">${statusMap[b.status]||b.status}</span>
+          </div>
+          <div class="chips" style="margin-bottom:14px">
+            <div class="chip"><strong>${escHtml(b.customer_name||'—')}</strong>Zákazník</div>
+            <div class="chip"><strong>${escHtml(b.customer_email)}</strong>E-mail</div>
+            <div class="chip"><strong>${escHtml(b.customer_phone||'—')}</strong>Telefon</div>
+            <div class="chip"><strong>${date}</strong>Termín</div>
+            <div class="chip"><strong>${b.tank_size_liters?b.tank_size_liters.toLocaleString('cs-CZ')+' l':'—'}</strong>Jímka</div>
+            <div class="chip"><strong>${Number(b.price_czk).toLocaleString('cs-CZ')} Kč</strong>Cena</div>
+          </div>
+          ${photoHtml}
+        </div>
+      `;
+    } catch(e) {
+      detail.innerHTML = '<div class="msg msg-err">Chyba při načítání výjezdu.</div>';
+    }
+  }
+
+  // ── Complete form ────────────────────────────────────────────────────────────
+  document.getElementById('complete-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const bookingId = form.booking_id.value;
+    const msg = document.getElementById('complete-message');
+    msg.className = 'msg';
+    msg.textContent = 'Ukládám...';
+    try {
+      if (form.photos.files.length > 0) {
+        const fd = new FormData();
+        for (const f of form.photos.files) fd.append('photos', f);
+        fd.append('type', 'after');
+        const upRes = await fetch('/api/uploads/' + bookingId + '/photos', { method: 'POST', body: fd });
+        if (!upRes.ok) { msg.className = 'msg msg-err'; msg.textContent = 'Chyba při nahrávání fotek.'; return; }
+      }
+      const patchRes = await fetch('/api/bookings/' + bookingId, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'done' })
+      });
+      if (patchRes.ok) {
+        msg.className = 'msg msg-ok';
+        msg.textContent = '✓ Výjezd #' + bookingId + ' označen jako dokončený. E-mail zákazníkovi byl odeslán.';
+        form.reset();
+        document.getElementById('photo-preview').innerHTML = '';
+      } else {
+        msg.className = 'msg msg-err'; msg.textContent = 'Chyba při aktualizaci statusu.';
+      }
+    } catch(e) {
+      msg.className = 'msg msg-err'; msg.textContent = 'Chyba při ukládání.';
+    }
+  });
+
+  function previewPhotos(input) {
+    const preview = document.getElementById('photo-preview');
+    preview.innerHTML = '';
+    Array.from(input.files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.style.cssText = 'width:72px;height:54px;object-fit:cover;border-radius:8px;border:1px solid rgba(0,0,0,0.06)';
+        preview.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ── Partner email ────────────────────────────────────────────────────────────
+  function openPartnerEmail() {
+    const subject = encodeURIComponent('Zájem o spolupráci se SepticGo – [Vaše jméno / firma]');
+    const body = encodeURIComponent(
+`Dobrý den,
+
+rád/a bych se informoval/a o možnostech spolupráce se SepticGo.
+
+Zajímám se o (označte příslušnou variantu):
+
+[ ] Spolupráce jako dopravce s cisternovou cisternou
+    - Počet vozidel a kapacita: ___
+    - Region(y), kde pracuji: ___
+    - Dostupnost (dny/hodiny): ___
+
+[ ] Spolupráce jako referral partner (bez vlastního vozidla)
+    - Region, který znám: ___
+    - Typ kontaktů / komunity: ___
+
+[ ] Regionální koordinátor (správa zakázek v dané oblasti)
+    - Region: ___
+    - Zkušenosti s koordinací nebo logistikou: ___
+
+[ ] Jiná forma spolupráce:
+    - Popis: ___
+
+Moje kontaktní údaje:
+Jméno / firma: ___
+Telefon: ___
+IČO (pokud podnikám): ___
+
+Prosím o zaslání podmínek spolupráce, výše provizí a informací o onboardingu.
+
+S pozdravem,
+[Jméno]`
+    );
+    window.location.href = `mailto:go@septicgo.com?subject=${subject}&body=${body}`;
+  }
+
+  // ── Auth modal ───────────────────────────────────────────────────────────────
+  let authMode = 'login';
+  function openAuth(mode) {
+    authMode = mode || 'login';
+    updateAuthUI();
+    document.getElementById('auth-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeAuth() {
+    document.getElementById('auth-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function toggleAuthMode() {
+    authMode = authMode === 'login' ? 'register' : 'login';
+    updateAuthUI();
+  }
+  function updateAuthUI() {
+    const l = authMode === 'login';
+    document.getElementById('auth-title').textContent = l ? 'Přihlásit se' : 'Registrovat se';
+    document.getElementById('auth-subtitle').textContent = l ? 'Přistupte ke svému partnerskému portálu' : 'Vytvořte si partnerský účet zdarma';
+    document.getElementById('auth-submit-btn').textContent = l ? 'Přihlásit se' : 'Vytvořit účet';
+    document.getElementById('auth-toggle-text').textContent = l ? 'Nemáte účet?' : 'Máte již účet?';
+    document.getElementById('auth-toggle-link').textContent = l ? 'Registrovat se' : 'Přihlásit se';
+    document.getElementById('auth-name-row').style.display = l ? 'none' : 'block';
+  }
+  async function submitAuth(e) {
+    e.preventDefault();
+    const endpoint = authMode === 'login' ? '/api/auth/login' : '/api/auth/register';
+    const body = { email: document.getElementById('auth-email').value, password: document.getElementById('auth-password').value };
+    if (authMode === 'register') body.name = document.getElementById('auth-name').value;
+    try {
+      const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const data = await res.json();
+      if (res.ok) { closeAuth(); loadPending(); }
+      else alert(data.message || 'Chyba při přihlášení.');
+    } catch { alert('Chyba připojení k serveru.'); }
+  }
+
+  // ── Lightbox ─────────────────────────────────────────────────────────────────
+  function openLightbox(url) {
+    document.getElementById('lightbox-img').src = url;
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+
+  // ── Helpers ───────────────────────────────────────────────────────────────────
+  function escHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+  }
+  function triggerReveal() {
+    document.querySelectorAll('.reveal:not(.visible)').forEach(el => el.classList.add('visible'));
+  }
+
+  // ── Scroll reveal ────────────────────────────────────────────────────────────
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // ── Badge blink keyframe ─────────────────────────────────────────────────────
+  const s = document.createElement('style');
+  s.textContent = '@keyframes blink{0%,100%{opacity:1;box-shadow:0 0 0 3px rgba(0,113,227,0.2)}50%{opacity:.4;box-shadow:0 0 0 5px rgba(0,113,227,0.08)}} @keyframes spin{to{transform:rotate(360deg)}}';
+  document.head.appendChild(s);
 </script>
 </body>
 </html>
